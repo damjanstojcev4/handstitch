@@ -1,13 +1,24 @@
+import { HeroSection } from "./components/hero/HeroSection";
 import WalletConfigurator from "./components/canvas/WalletConfigurator";
 
 export default function Home() {
   return (
-    <main className="p-10 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">
-        Custom Wallet Builder
-      </h1>
+    <main className="w-full">
 
-      <WalletConfigurator />
+      {/* HERO — full width, full height */}
+      <HeroSection />
+
+      {/* CONFIGURATOR — contained */}
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold mb-6">
+            Custom Wallet Builder
+          </h1>
+
+          <WalletConfigurator />
+        </div>
+      </section>
+
     </main>
   );
 }
