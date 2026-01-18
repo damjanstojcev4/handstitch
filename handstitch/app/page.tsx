@@ -1,5 +1,6 @@
 import { HeroSection } from "./components/hero/HeroSection";
 import WalletConfigurator from "./components/canvas/WalletConfigurator";
+import AboutSection from "./components/about/AboutSection";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
 
       {/* HERO — full width, full height */}
       <HeroSection />
+      <AboutSection />
 
       {/* CONFIGURATOR — contained */}
       <section className="py-20 px-6">
