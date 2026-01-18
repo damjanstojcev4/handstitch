@@ -4,7 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Suspense, useEffect, useRef } from "react";
 import { Vector3 } from "three";
-import WalletModel from "./WalletModel";
+import WalletModel from "@/app/components/canvas/WalletModel";
 import * as THREE from "three";
 
 function ModelAnimator({ activeView, children }: { activeView: string, children: React.ReactNode }) {
