@@ -14,7 +14,7 @@ export const HeroNavigation = () => {
             <div className="flex items-center justify-between relative">
 
                 {/* Left */}
-                <div className="hidden lg:flex items-center gap-8 flex-1">
+                <div className="hidden lg:flex items-center gap-8 flex-1 text-white">
                     {["Men", "Women", "Customize"].map((item) => (
                         <a
                             key={item}
@@ -29,14 +29,14 @@ export const HeroNavigation = () => {
                 {/* Logo */}
                 <div className="lg:absolute lg:left-1/2 lg:-translate-x-1/2">
                     <a href="/" aria-label="Home">
-                        <h2 className="text-hero font-display text-2xl md:text-3xl tracking-[0.3em] font-semibold">
-                            ARTISAN
+                        <h2 className="text-hero font-display text-2xl md:text-3xl tracking-[0.3em] font-semibold text-white">
+                            Handstitch
                         </h2>
                     </a>
                 </div>
 
                 {/* Right */}
-                <div className="hidden lg:flex items-center gap-8 flex-1 justify-end">
+                <div className="hidden lg:flex items-center gap-8 flex-1 justify-end text-white">
                     <a href="#about" className="hero-nav-link">About</a>
                     <a href="#contact" className="hero-nav-link">Contact</a>
 
@@ -57,7 +57,7 @@ export const HeroNavigation = () => {
                 </div>
 
                 {/* Mobile */}
-                <div className="flex lg:hidden items-center gap-4 ml-auto">
+                <div className="flex lg:hidden items-center gap-4 ml-auto text-white">
                     <button aria-label="Cart" className="hero-icon-btn">
                         <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
                     </button>

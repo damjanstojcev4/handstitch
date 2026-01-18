@@ -18,7 +18,7 @@ const slides = [
     {
         image: heroCraft,
         title: "Artisan Made",
-        subtitle: "Every stitch tells a story",
+        subtitle: "Поддржи локало. Носи Квалитетно.",
     },
     {
         image: heroWallets,
@@ -28,16 +28,18 @@ const slides = [
 ];
 
 export const HeroCarousel = () => {
-    const [current, setCurrent] = useState(0);
+    const [[page, direction], setPage] = useState([0, 0]);
     const [autoPlay, setAutoPlay] = useState(true);
 
-    const next = useCallback(
-        () => setCurrent((c) => (c + 1) % slides.length),
-        []
-    );
+    // We can calculate current index from page (which can go infinite)
+    const current = Math.abs(page % slides.length);
 
-    const prev = () =>
-        setCurrent((c) => (c - 1 + slides.length) % slides.length);
+    const paginate = useCallback((newDirection: number) => {
+        setPage([page + newDirection, newDirection]);
+    }, [page]);
+
+    const next = useCallback(() => paginate(1), [paginate]);
+    const prev = useCallback(() => paginate(-1), [paginate]);
 
     useEffect(() => {
         if (!autoPlay) return;
@@ -45,15 +47,37 @@ export const HeroCarousel = () => {
         return () => clearInterval(id);
     }, [autoPlay, next]);
 
+    const variants = {
+        enter: (direction: number) => ({
+            x: direction > 0 ? 1000 : -1000,
+            opacity: 0
+        }),
+        center: {
+            zIndex: 1,
+            x: 0,
+            opacity: 1
+        },
+        exit: (direction: number) => ({
+            zIndex: 0,
+            x: direction < 0 ? 1000 : -1000,
+            opacity: 0
+        })
+    };
+
     return (
-        <div className="relative w-full h-full overflow-hidden">
-            <AnimatePresence mode="wait">
+        <div className="relative w-full h-full overflow-hidden bg-black">
+            <AnimatePresence initial={false} custom={direction}>
                 <motion.div
-                    key={current}
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    key={page}
+                    custom={direction}
+                    variants={variants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                        x: { type: "spring", stiffness: 300, damping: 30 },
+                        opacity: { duration: 0.2 }
+                    }}
                     className="absolute inset-0"
                 >
                     <Image
@@ -68,22 +92,22 @@ export const HeroCarousel = () => {
             </AnimatePresence>
 
             {/* Content */}
-            <div className="absolute inset-0 flex items-center">
-                <div className="px-6 md:px-12 lg:px-20 max-w-2xl">
+            <div className="absolute inset-0 flex items-center z-10 pointer-events-none">
+                <div className="px-6 md:px-12 lg:px-20 max-w-2xl pointer-events-auto">
                     <motion.div
                         key={current}
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                        <h1 className="display-heading text-hero mb-4">
+                        <h1 className="display-heading text-xl md:text-3xl lg:text-4xl text-hero mb-4 text-white">
                             {slides[current].title}
                         </h1>
-                        <p className="text-hero/80 text-lg mb-8">
+                        <p className="text-hero/80 text-4xl md:text-6xl lg:text-7xl mb-8 text-white whitespace-normal lg:whitespace-nowrap">
                             {slides[current].subtitle}
                         </p>
 
-                        <div className="flex gap-4">
+                        <div className="flex gap-4 text-white">
                             <a href="#men" className="hero-btn">Shop Men</a>
                             <a href="#women" className="hero-btn">Shop Women</a>
                         </div>
@@ -92,10 +116,10 @@ export const HeroCarousel = () => {
             </div>
 
             {/* Controls */}
-            <button onClick={prev} className="hero-arrow left-6">
+            <button onClick={prev} className="hero-arrow left-6 z-20">
                 <ChevronLeft />
             </button>
-            <button onClick={next} className="hero-arrow right-6">
+            <button onClick={next} className="hero-arrow right-6 z-20">
                 <ChevronRight />
             </button>
         </div>
