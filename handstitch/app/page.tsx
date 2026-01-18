@@ -1,4 +1,4 @@
-import WalletConfigurator from "./components/WalletConfigurator";
+import WalletConfigurator from "./components/canvas/WalletConfigurator";
 
 export default function Home() {
   return (
