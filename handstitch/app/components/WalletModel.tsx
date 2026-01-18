@@ -26,6 +26,8 @@ export default function WalletModel() {
     const center = new Vector3();
     box.getCenter(center);
     scene.position.sub(center);
+    scene.position.y -= 0.3;
+    scene.rotation.set(0, 0, 0);
   }, [scene]);
 
   return <primitive object={scene} />;
