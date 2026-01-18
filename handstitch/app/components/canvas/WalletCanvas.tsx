@@ -32,19 +32,38 @@ function ModelAnimator({ activeView, children }: { activeView: string, children:
       case '360':
         // Continuous rotation
         group.current.rotation.y += delta * 0.5;
-        // Reset position
+        // Reset position and other axes
         group.current.position.lerp(targetPos, 0.1);
-        return; // Skip rotation lerp
+        group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, 0, 0.1);
+        group.current.rotation.z = THREE.MathUtils.lerp(group.current.rotation.z, 0, 0.1);
+        return;
+    }
+
+    // Handle transition from 360 (large rotation values)
+    // Normalize current rotation to be within -PI to PI relative to target
+    // for smoother shortest-path interpolation
+    if (activeView !== '360') {
+      // This simple modulo logic helps keep it from spinning 50 times
+      // However, simple Euler lerp is still risky.
+      // A better quick fix for the "spin like crazy" bug:
+      // If we are way off, snap or just modulo.
+
+      const currentY = group.current.rotation.y % (Math.PI * 2);
+      group.current.rotation.y = currentY;
     }
 
     // Smooth transition
     group.current.position.lerp(targetPos, 0.1);
 
-    // Simple rotation lerp (good enough for 0 -> PI transitions)
-    // For production-grade generic rotations, Quaternions are better, 
-    // but here we have controlled inputs.
+    // Euler Lerp with shortest path logic for Y axis
+    let diff = targetRot.y - group.current.rotation.y;
+    // Normalize diff to -PI to +PI
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+
     group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, targetRot.x, 0.1);
-    group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, targetRot.y, 0.1);
+    // Apply the shortest path difference
+    group.current.rotation.y += diff * 0.1;
     group.current.rotation.z = THREE.MathUtils.lerp(group.current.rotation.z, targetRot.z, 0.1);
   });
 
@@ -61,8 +80,9 @@ export default function WalletCanvas({ activeView }: WalletCanvasProps) {
       className="w-full h-full"
       camera={{ position: [0, 0, 2.5], fov: 45 }}
     >
-      <ambientLight intensity={1.2} />
-      <directionalLight position={[3, 3, 3]} intensity={2.5} />
+      <ambientLight intensity={1.5} />
+      <directionalLight position={[5, 5, 5]} intensity={2} />
+      <directionalLight position={[-5, 5, -5]} intensity={1} />
 
       <Suspense fallback={null}>
         <ModelAnimator activeView={activeView}>
@@ -72,7 +92,7 @@ export default function WalletCanvas({ activeView }: WalletCanvasProps) {
 
       <OrbitControls
         enablePan={false}
-        enableZoom={true}
+        enableZoom={false} // Disable zoom to prevent scroll issues on page
         enableRotate={true}
         minPolarAngle={Math.PI / 4}
         maxPolarAngle={Math.PI / 1.5}
