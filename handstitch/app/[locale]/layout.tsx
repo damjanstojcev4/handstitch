@@ -1,5 +1,6 @@
 // app/[locale]/layout.tsx
 import { ReactNode } from "react";
+import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -9,6 +10,12 @@ import "../globals.css";
 type Props = {
   children: ReactNode;
   params: Promise<{ locale: string }>; // params is now a Promise
+};
+
+export const metadata: Metadata = {
+  icons: {
+    icon: "/images/H.png",
+  },
 };
 
 export default async function LocaleLayout({ children, params }: Props) {
