@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, User, ShoppingBag, X, Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -80,11 +81,15 @@ export const HeroNavigation = () => {
 
                 {/* Logo */}
                 <div className="lg:absolute lg:left-1/2 lg:-translate-x-1/2">
-                    <a href="/" aria-label="Home">
-                        <h2 className="text-hero font-display text-2xl md:text-3xl tracking-[0.3em] font-semibold text-white">
-                            Handstitch
-                        </h2>
-                    </a>
+                    <Link href="/" aria-label="Home" className="block">
+                        <Image
+                            src="/images/logo.png"
+                            alt="Handstitch Logo"
+                            width={300}
+                            height={300}
+                            className="h-16 md:h-20 w-auto object-contain brightness-0 invert"
+                        />
+                    </Link>
                 </div>
 
                 {/* Right (Desktop) */}
