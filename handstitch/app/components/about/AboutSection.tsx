@@ -20,28 +20,28 @@ const fadeRight = {
     visible: { opacity: 1, x: 0 },
 };
 
+import { useTranslations } from "next-intl";
+
 const AboutSection = () => {
+    const t = useTranslations("about");
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-120px" });
 
     const features = [
         {
             number: "01",
-            title: "Full-Grain Leather",
-            description:
-                "Sourced from the finest tanneries, our leather develops a unique patina that tells your story.",
+            title: t("features.leather.title"),
+            description: t("features.leather.desc"),
         },
         {
             number: "02",
-            title: "Hand-Stitched",
-            description:
-                "Traditional saddle-stitching creates bonds stronger than machine alternatives.",
+            title: t("features.stitched.title"),
+            description: t("features.stitched.desc"),
         },
         {
             number: "03",
-            title: "Minimalist Design",
-            description:
-                "Clean lines and thoughtful details that age beautifully over time.",
+            title: t("features.design.title"),
+            description: t("features.design.desc"),
         },
     ];
 
@@ -67,32 +67,28 @@ const AboutSection = () => {
                             variants={fadeUp}
                             className="inline-block text-[#c08a5a] uppercase tracking-[0.35em] text-xs font-semibold mb-4"
                         >
-                            Our Story
+                            {t("story")}
                         </motion.span>
 
                         <motion.h2
                             variants={fadeUp}
                             className="font-display text-3xl md:text-4xl lg:text-5xl leading-tight mb-6"
                         >
-                            Crafted with
-                            <br />
-                            <span className="italic text-[#c08a5a]">Purpose & Care</span>
+                            {t("title")}
                         </motion.h2>
 
                         <motion.p
                             variants={fadeUp}
                             className="text-[#57534e] text-base leading-relaxed max-w-xl mb-12"
                         >
-                            For over a decade, our workshop has been dedicated to creating
-                            leather goods that stand the test of time. Each wallet that leaves
-                            our hands carries the passion and precision of true craftsmanship.
+                            {t("description")}
                         </motion.p>
 
                         <motion.div variants={fadeUp} className="flex items-center gap-12">
                             <div>
                                 <p className="font-display text-4xl md:text-5xl">10+</p>
                                 <p className="text-[#78716c] text-sm mt-1">
-                                    Years of Craft
+                                    {t("years")}
                                 </p>
                             </div>
 
@@ -101,7 +97,7 @@ const AboutSection = () => {
                             <div>
                                 <p className="font-display text-4xl md:text-5xl">5k+</p>
                                 <p className="text-[#78716c] text-sm mt-1">
-                                    Happy Clients
+                                    {t("clients")}
                                 </p>
                             </div>
                         </motion.div>

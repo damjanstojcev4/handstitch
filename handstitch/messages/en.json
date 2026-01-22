@@ -1,0 +1,57 @@
+{
+    "nav": {
+        "men": "Men",
+        "women": "Women",
+        "customize": "Customize",
+        "about": "About",
+        "contact": "Contact"
+    },
+    "hero": {
+        "slide1": {
+            "title": "Crafted By Hand",
+            "subtitle": "Premium leather, timeless design"
+        },
+        "slide2": {
+            "title": "Artisan Made",
+            "subtitle": "Support Local. Wear Quality."
+        },
+        "slide3": {
+            "title": "The Collection",
+            "subtitle": "Discover your signature piece"
+        }
+    },
+    "about": {
+        "story": "Our Story",
+        "title": "Crafted with Purpose & Care",
+        "description": "For over a decade, our workshop has been dedicated to creating leather goods that stand the test of time. Each wallet that leaves our hands carries the passion and precision of true craftsmanship.",
+        "years": "Years of Craft",
+        "clients": "Happy Clients",
+        "features": {
+            "leather": {
+                "title": "Full-Grain Leather",
+                "desc": "Sourced from the finest tanneries, our leather develops a unique patina that tells your story."
+            },
+            "stitched": {
+                "title": "Hand-Stitched",
+                "desc": "Traditional saddle-stitching creates bonds stronger than machine alternatives."
+            },
+            "design": {
+                "title": "Minimalist Design",
+                "desc": "Clean lines and thoughtful details that age beautifully over time."
+            }
+        }
+    },
+    "configurator": {
+        "title": "Custom Wallet Builder",
+        "customize": "Customize your wallet",
+        "drag_drop": "Drag & drop options will appear here",
+        "materials": "Materials / Colors (coming soon)",
+        "price": "Price summary",
+        "views": {
+            "front": "Front",
+            "back": "Back",
+            "detail": "Detail",
+            "360": "360"
+        }
+    }
+}

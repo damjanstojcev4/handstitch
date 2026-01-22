@@ -3,10 +3,24 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, User, ShoppingBag, X, Menu } from "lucide-react";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export const HeroNavigation = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
+    const t = useTranslations("nav");
+    const pathname = usePathname();
+    const basePath = pathname.replace(/^\/(en|mk)/, "");
+
+    const navItems = [
+        { key: "men", label: t("men") },
+        { key: "women", label: t("women") },
+        { key: "customize", label: t("customize") },
+        { key: "about", label: t("about") },
+        { key: "contact", label: t("contact") },
+    ];
 
     // Close on click outside
     useEffect(() => {
@@ -28,6 +42,24 @@ export const HeroNavigation = () => {
         };
     }, [isOpen]);
 
+    const LocaleSwitcher = () => (
+        <div className="flex items-center gap-2 text-xs font-semibold tracking-widest text-white/70">
+            <Link
+                href={`/en${basePath}`}
+                className={`hover:text-white transition-colors ${pathname.startsWith("/en") ? "text-white" : ""}`}
+            >
+                EN
+            </Link>
+            <span className="w-px h-3 bg-white/20" />
+            <Link
+                href={`/mk${basePath}`}
+                className={`hover:text-white transition-colors ${pathname.startsWith("/mk") ? "text-white" : ""}`}
+            >
+                MK
+            </Link>
+        </div>
+    );
+
     return (
         <motion.nav
             initial={{ opacity: 0, y: -20 }}
@@ -39,9 +71,9 @@ export const HeroNavigation = () => {
 
                 {/* Left (Desktop) */}
                 <div className="hidden lg:flex items-center gap-8 flex-1 text-white">
-                    {["Men", "Women", "Customize"].map((item) => (
-                        <a key={item} href={`#${item.toLowerCase()}`} className="hero-nav-link">
-                            {item}
+                    {navItems.slice(0, 3).map((item) => (
+                        <a key={item.key} href={`#${item.key}`} className="hero-nav-link">
+                            {item.label}
                         </a>
                     ))}
                 </div>
@@ -57,10 +89,14 @@ export const HeroNavigation = () => {
 
                 {/* Right (Desktop) */}
                 <div className="hidden lg:flex items-center gap-8 flex-1 justify-end text-white">
-                    <a href="#about" className="hero-nav-link">About</a>
-                    <a href="#contact" className="hero-nav-link">Contact</a>
+                    {navItems.slice(3).map((item) => (
+                        <a key={item.key} href={`#${item.key}`} className="hero-nav-link">
+                            {item.label}
+                        </a>
+                    ))}
 
                     <div className="flex items-center gap-6 ml-4">
+                        <LocaleSwitcher />
                         <button className="hero-icon-btn">
                             <Search className="w-5 h-5" strokeWidth={1.5} />
                         </button>
@@ -78,6 +114,7 @@ export const HeroNavigation = () => {
 
                 {/* Mobile */}
                 <div className="flex lg:hidden items-center gap-4 ml-auto text-white">
+                    <LocaleSwitcher />
                     <button className="hero-icon-btn">
                         <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
                     </button>
@@ -119,14 +156,14 @@ export const HeroNavigation = () => {
               "
                         >
                             <div className="flex flex-col py-6 px-6 gap-5 text-lg">
-                                {["Men", "Women", "Customize", "About", "Contact"].map((item) => (
+                                {navItems.map((item) => (
                                     <a
-                                        key={item}
-                                        href={`#${item.toLowerCase()}`}
+                                        key={item.key}
+                                        href={`#${item.key}`}
                                         onClick={() => setIsOpen(false)}
                                         className="hover:text-gray-300 transition-colors"
                                     >
-                                        {item}
+                                        {item.label}
                                     </a>
                                 ))}
 

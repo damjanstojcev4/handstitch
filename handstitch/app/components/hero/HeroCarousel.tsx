@@ -9,27 +9,32 @@ import heroLeather from "@/public/images/image1.jpg";
 import heroCraft from "@/public/images/image2.jpg";
 import heroWallets from "@/public/images/image3.jpg";
 
-const slides = [
-    {
-        image: heroLeather,
-        title: "Crafted By Hand",
-        subtitle: "Premium leather, timeless design",
-    },
-    {
-        image: heroCraft,
-        title: "Artisan Made",
-        subtitle: "Поддржи локало. Носи Квалитетно.",
-    },
-    {
-        image: heroWallets,
-        title: "The Collection",
-        subtitle: "Discover your signature piece",
-    },
-];
+// Slides are now defined inside the component to use translations
+
+import { useTranslations } from "next-intl";
 
 export const HeroCarousel = () => {
     const [[page, direction], setPage] = useState([0, 0]);
     const [autoPlay, setAutoPlay] = useState(true);
+    const t = useTranslations("hero");
+
+    const slides = [
+        {
+            image: heroLeather,
+            title: t("slide1.title"),
+            subtitle: t("slide1.subtitle"),
+        },
+        {
+            image: heroCraft,
+            title: t("slide2.title"),
+            subtitle: t("slide2.subtitle"),
+        },
+        {
+            image: heroWallets,
+            title: t("slide3.title"),
+            subtitle: t("slide3.subtitle"),
+        },
+    ];
 
     // We can calculate current index from page (which can go infinite)
     const current = Math.abs(page % slides.length);

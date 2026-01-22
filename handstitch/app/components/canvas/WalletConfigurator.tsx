@@ -4,8 +4,18 @@ import { useState } from "react";
 
 import WalletCanvas from "./WalletCanvas";
 
+import { useTranslations } from "next-intl";
+
 export default function WalletConfigurator() {
   const [activeView, setActiveView] = useState("front");
+  const t = useTranslations("configurator");
+
+  const views = [
+    { key: "front", label: t("views.front") },
+    { key: "back", label: t("views.back") },
+    { key: "detail", label: t("views.detail") },
+    { key: "360", label: t("views.360") },
+  ];
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6 h-[600px]">
@@ -16,16 +26,16 @@ export default function WalletConfigurator() {
 
         {/* View Controls Overlay */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-lg">
-          {['Front', 'Back', 'Detail', '360'].map((view) => (
+          {views.map((view) => (
             <button
-              key={view}
-              onClick={() => setActiveView(view.toLowerCase())}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${activeView === view.toLowerCase()
+              key={view.key}
+              onClick={() => setActiveView(view.key)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${activeView === view.key
                 ? 'bg-black text-white'
                 : 'bg-transparent text-gray-700 hover:bg-black/5'
                 }`}
             >
-              {view}
+              {view.label}
             </button>
           ))}
         </div>
@@ -34,19 +44,19 @@ export default function WalletConfigurator() {
       {/* RIGHT — OPTIONS PANEL */}
       <div className="border border-gray-200 rounded-2xl p-4 flex flex-col gap-4">
         <h2 className="text-lg font-semibold">
-          Customize your wallet
+          {t("customize")}
         </h2>
 
         <div className="border border-dashed border-gray-300 rounded-xl p-4 text-sm text-gray-500 text-center">
-          Drag & drop options will appear here
+          {t("drag_drop")}
         </div>
 
         <div className="border border-dashed border-gray-300 rounded-xl p-4 text-sm text-gray-500 text-center">
-          Materials / Colors (coming soon)
+          {t("materials")}
         </div>
 
         <div className="border border-dashed border-gray-300 rounded-xl p-4 text-sm text-gray-500 text-center">
-          Price summary
+          {t("price")}
         </div>
       </div>
 
