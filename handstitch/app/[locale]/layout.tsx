@@ -17,12 +17,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const content = {
     en: {
-      title: "Handstitch | Premium Leather Wallets & Artisanal Craftsmanship",
+      title: "Handstitch",
       description: "Discover handcrafted leather wallets, crafted for durability and style. Handstitch offers premium, unique leather accessories made with artisanal passion.",
       keywords: "leather wallets, handcrafted wallets, artisanal leather, premium accessories, Handstitch"
     },
     mk: {
-      title: "Handstitch | Рачно Изработени Кожни Паричници & Квалитет",
+      title: "Handstitch",
       description: "Откријте рачно изработени кожни паричници, создадени за издржливост и стил. Handstitch нуди премиум, уникатни кожни додатоци изработени со занаетчиска страст.",
       keywords: "кожни паричници, рачна изработка, кожни производи, занаетчиство, Handstitch"
     }
