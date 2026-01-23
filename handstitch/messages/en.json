@@ -73,5 +73,17 @@
             "detail": "Detail",
             "360": "360"
         }
+    },
+    "footer": {
+        "description": "Handcrafted leather wallets made with patience, precision, and purpose. Designed to age beautifully with you.",
+        "explore_title": "Explore",
+        "about": "About",
+        "gallery": "Gallery",
+        "builder": "Build Your Own",
+        "contact": "Contact",
+        "follow_title": "Follow",
+        "rights": "All rights reserved.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms"
     }
 }
