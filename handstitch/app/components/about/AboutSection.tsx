@@ -86,7 +86,7 @@ const AboutSection = () => {
 
                         <motion.div variants={fadeUp} className="flex items-center gap-12">
                             <div>
-                                <p className="font-display text-4xl md:text-5xl">10+</p>
+                                <p className="font-display text-4xl md:text-5xl">{t("years_val")}</p>
                                 <p className="text-[#78716c] text-sm mt-1">
                                     {t("years")}
                                 </p>
@@ -95,7 +95,7 @@ const AboutSection = () => {
                             <div className="h-14 w-px bg-[#d6d3d1]" />
 
                             <div>
-                                <p className="font-display text-4xl md:text-5xl">5k+</p>
+                                <p className="font-display text-4xl md:text-5xl">{t("clients_val")}</p>
                                 <p className="text-[#78716c] text-sm mt-1">
                                     {t("clients")}
                                 </p>

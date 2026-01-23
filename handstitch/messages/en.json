@@ -18,7 +18,9 @@
         "slide3": {
             "title": "The Collection",
             "subtitle": "Discover your signature piece"
-        }
+        },
+        "shop_men": "Shop Men",
+        "shop_women": "Shop Women"
     },
     "about": {
         "story": "Our Story",
@@ -39,6 +41,24 @@
                 "title": "Minimalist Design",
                 "desc": "Clean lines and thoughtful details that age beautifully over time."
             }
+        },
+        "years_val": "10+",
+        "clients_val": "5k+"
+    },
+    "gallery": {
+        "title": "Our Most Popular Products",
+        "subtitle": "Can't find what you're looking for?",
+        "cta": "Build your own",
+        "items": {
+            "g-1": "Classic Black Bifold",
+            "g-2": "Artisanal Edge Detail",
+            "g-3": "Hand-Stitched Precision",
+            "g-4": "Minimalist Card Holder",
+            "g-5": "Premium Leather Texture",
+            "g-6": "Crafting Process",
+            "g-7": "Deep Brown Tones",
+            "g-8": "Studio Essentials",
+            "g-9": "The Finished Piece"
         }
     },
     "configurator": {
