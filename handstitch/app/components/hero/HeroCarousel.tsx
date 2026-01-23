@@ -113,8 +113,8 @@ export const HeroCarousel = () => {
                         </p>
 
                         <div className="flex gap-4 text-white">
-                            <a href="#men" className="hero-btn">Shop Men</a>
-                            <a href="#women" className="hero-btn">Shop Women</a>
+                            <a href="#men" className="hero-btn">{t("shop_men")}</a>
+                            <a href="#women" className="hero-btn">{t("shop_women")}</a>
                         </div>
                     </motion.div>
                 </div>
