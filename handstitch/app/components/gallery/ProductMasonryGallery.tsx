@@ -77,7 +77,7 @@ export const ProductMasonryGallery = () => {
                 </motion.div>
 
                 {/* Masonry Columns */}
-                <div className="mt-12 columns-1 sm:columns-2 lg:columns-3 gap-6 lg:gap-8 [column-fill:_balance]">
+                <div className="mt-10 columns-2 sm:columns-2 lg:columns-3 gap-3 sm:gap-5 lg:gap-8 [column-fill:_balance]">
                     {items.map((it, idx) => {
                         const productName = t(`items.${it.id}`);
                         return (
@@ -87,16 +87,19 @@ export const ProductMasonryGallery = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true, margin: "-80px" }}
                                 transition={{ duration: 0.45, delay: idx * 0.03 }}
-                                className="mb-6 lg:mb-8 break-inside-avoid"
+                                className="mb-3 sm:mb-5 lg:mb-8 break-inside-avoid"
                             >
                                 <div
                                     className={[
-                                        "group relative overflow-hidden rounded-2xl",
+                                        "group relative overflow-hidden",
+                                        "rounded-xl sm:rounded-2xl",                     // tighter on mobile
                                         "bg-white/60 backdrop-blur",
                                         "border border-[#e7e5e4]",
+                                        "shadow-[0_10px_30px_-18px_rgba(28,25,23,0.35)]", // always-on “pin” depth
+                                        "active:scale-[0.99]",                           // tap feel on mobile
+                                        "transition-all duration-300",
                                         "hover:border-[#c08a5a]/50",
                                         "hover:shadow-[0_20px_60px_-20px_rgba(192,138,90,0.35)]",
-                                        "transition-all duration-300",
                                         aspectClass[it.aspect],
                                     ].join(" ")}
                                 >

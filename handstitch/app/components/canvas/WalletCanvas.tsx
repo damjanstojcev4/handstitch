@@ -1,70 +1,61 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { Suspense, useEffect, useRef } from "react";
-import { Vector3 } from "three";
-import WalletModel from "@/app/components/canvas/WalletModel";
+import { ContactShadows, Environment, OrbitControls } from "@react-three/drei";
+import { Suspense, useMemo, useRef } from "react";
 import * as THREE from "three";
+import WalletModel, { WalletConfig } from "@/app/components/canvas/WalletModel";
 
-function ModelAnimator({ activeView, children }: { activeView: string, children: React.ReactNode }) {
+function ModelAnimator({
+  activeView,
+  children,
+}: {
+  activeView: string;
+  children: React.ReactNode;
+}) {
   const group = useRef<THREE.Group>(null);
 
-  useFrame((state, delta) => {
-    if (!group.current) return;
+  const targets = useMemo(() => {
+    const baseEuler = new THREE.Euler(1.4, 0, 0);
+    const qBase = new THREE.Quaternion().setFromEuler(baseEuler);
 
-    const targetPos = new Vector3(0, 0, 0);
-    const targetRot = new Vector3(0, 0, 0);
+    const qFront = qBase.clone();
 
-    // Determine targets
-    switch (activeView) {
-      case 'front':
-        // Default (0,0,0)
-        break;
-      case 'back':
-        targetRot.y = Math.PI;
-        break;
-      case 'detail':
-        targetPos.z = 1.5; // Move closer to camera
-        targetRot.x = 0.2; // Slight tilt
-        targetRot.y = -0.2;
-        break;
-      case '360':
-        // Continuous rotation
-        group.current.rotation.y += delta * 0.5;
-        // Reset position and other axes
-        group.current.position.lerp(targetPos, 0.1);
-        group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, 0, 0.1);
-        group.current.rotation.z = THREE.MathUtils.lerp(group.current.rotation.z, 0, 0.1);
-        return;
+    const qRotBack = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(0, 1, 0),
+      Math.PI
+    );
+    const qBack = qRotBack.multiply(qBase);
+
+    const qRotDetail = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(0, 1, 0),
+      -0.2
+    );
+    const qDetail = qRotDetail.multiply(qBase);
+
+    return { qFront, qBack, qDetail };
+  }, []);
+
+  useFrame((_, delta) => {
+    const g = group.current;
+    if (!g) return;
+
+    const targetPos = new THREE.Vector3(0, 0, 0);
+    let targetQuat = targets.qFront;
+
+    if (activeView === "back") {
+      targetQuat = targets.qBack;
+    } else if (activeView === "detail") {
+      targetPos.z = 0.35;
+      targetQuat = targets.qDetail;
+    } else if (activeView === "360") {
+      g.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), delta * 0.6);
+      g.position.lerp(targetPos, 0.1);
+      return;
     }
 
-    // Handle transition from 360 (large rotation values)
-    // Normalize current rotation to be within -PI to PI relative to target
-    // for smoother shortest-path interpolation
-    if (activeView !== '360') {
-      // This simple modulo logic helps keep it from spinning 50 times
-      // However, simple Euler lerp is still risky.
-      // A better quick fix for the "spin like crazy" bug:
-      // If we are way off, snap or just modulo.
-
-      const currentY = group.current.rotation.y % (Math.PI * 2);
-      group.current.rotation.y = currentY;
-    }
-
-    // Smooth transition
-    group.current.position.lerp(targetPos, 0.1);
-
-    // Euler Lerp with shortest path logic for Y axis
-    let diff = targetRot.y - group.current.rotation.y;
-    // Normalize diff to -PI to +PI
-    while (diff > Math.PI) diff -= Math.PI * 2;
-    while (diff < -Math.PI) diff += Math.PI * 2;
-
-    group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, targetRot.x, 0.1);
-    // Apply the shortest path difference
-    group.current.rotation.y += diff * 0.1;
-    group.current.rotation.z = THREE.MathUtils.lerp(group.current.rotation.z, targetRot.z, 0.1);
+    g.position.lerp(targetPos, 0.12);
+    g.quaternion.slerp(targetQuat, 0.12);
   });
 
   return <group ref={group}>{children}</group>;
@@ -72,30 +63,38 @@ function ModelAnimator({ activeView, children }: { activeView: string, children:
 
 interface WalletCanvasProps {
   activeView: string;
+  config: WalletConfig;
 }
 
-export default function WalletCanvas({ activeView }: WalletCanvasProps) {
+export default function WalletCanvas({ activeView, config }: WalletCanvasProps) {
   return (
-    <Canvas
-      className="w-full h-full"
-      camera={{ position: [0, 0, 2.5], fov: 45 }}
-    >
-      <ambientLight intensity={1.5} />
-      <directionalLight position={[5, 5, 5]} intensity={2} />
-      <directionalLight position={[-5, 5, -5]} intensity={1} />
+    <Canvas className="w-full h-full" camera={{ position: [0, 0, 2.5], fov: 45 }}>
+      <ambientLight intensity={0.5} />
+      <Environment preset="studio" />
 
       <Suspense fallback={null}>
         <ModelAnimator activeView={activeView}>
-          <WalletModel />
+          <WalletModel config={config} />
         </ModelAnimator>
+
+        <ContactShadows
+          position={[0, -0.8, 0]}
+          opacity={0.4}
+          scale={5}
+          blur={2.5}
+          far={4}
+        />
       </Suspense>
 
       <OrbitControls
         enablePan={false}
-        enableZoom={false} // Disable zoom to prevent scroll issues on page
+        enableZoom={false}
         enableRotate={true}
-        minPolarAngle={Math.PI / 4}
-        maxPolarAngle={Math.PI / 1.5}
+        enableDamping={true}
+        dampingFactor={0.05}
+        minPolarAngle={0.5}
+        maxPolarAngle={2.5}
+        rotateSpeed={0.7}
       />
     </Canvas>
   );
