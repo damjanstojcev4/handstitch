@@ -84,7 +84,7 @@ export const HeroNavigation = () => {
                     <Link href="/" aria-label="Home" className="block">
                         <Image
                             src="/images/logo.png"
-                            alt="Handstitch Logo"
+                            alt={t("logo_alt")}
                             width={300}
                             height={300}
                             className="h-16 md:h-20 w-auto object-contain brightness-0 invert"
