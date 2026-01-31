@@ -1,45 +1,25 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-
-const container = {
-    hidden: {},
-    visible: {
-        transition: { staggerChildren: 0.12 },
-    },
-};
-
-const fadeUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-};
-
-const fadeRight = {
-    hidden: { opacity: 0, x: 30 },
-    visible: { opacity: 1, x: 0 },
-};
-
+import Image from "next/image";
+import { motion, useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 const AboutSection = () => {
     const t = useTranslations("about");
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-120px" });
+    const ref = useRef<HTMLElement | null>(null);
+    const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
 
     const features = [
         {
-            number: "01",
             title: t("features.leather.title"),
             description: t("features.leather.desc"),
         },
         {
-            number: "02",
             title: t("features.stitched.title"),
             description: t("features.stitched.desc"),
         },
         {
-            number: "03",
             title: t("features.design.title"),
             description: t("features.design.desc"),
         },
@@ -48,92 +28,127 @@ const AboutSection = () => {
     return (
         <section
             id="about"
-            className="relative overflow-hidden py-24 md:py-32 bg-[#faf9f6] text-[#1c1917]"
+            ref={ref}
+            className="relative text-[#f5f1ea] py-32 overflow-hidden"
         >
-            {/* Background accent */}
-            <div className="pointer-events-none absolute top-0 right-0 h-full w-[60%] -skew-x-12 translate-x-1/3 bg-[#c08a5a]/5 hidden md:block" />
 
-            <div className="relative z-10 max-w-7xl mx-auto px-6">
-                <motion.div
-                    ref={ref}
-                    variants={container}
-                    initial="hidden"
-                    animate={isInView ? "visible" : "hidden"}
-                    className="grid lg:grid-cols-2 gap-16 lg:gap-28 items-center"
-                >
-                    {/* LEFT */}
-                    <div>
-                        <motion.span
-                            variants={fadeUp}
-                            className="inline-block text-[#c08a5a] uppercase tracking-[0.35em] text-xs font-semibold mb-4"
-                        >
-                            {t("story")}
-                        </motion.span>
 
-                        <motion.h2
-                            variants={fadeUp}
-                            className="font-display text-3xl md:text-4xl lg:text-5xl leading-tight mb-6"
-                        >
+
+            <div className="max-w-7xl mx-auto px-6 relative">
+                {/* TOP SPECIFICATION BAR */}
+                <div className="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-20 border-b border-white/15 pb-8 gap-6">
+                    <div className="max-w-xl">
+                        <h2 className="font-serif text-5xl md:text-7xl tracking-tighter leading-none italic">
                             {t("title")}
-                        </motion.h2>
+                        </h2>
+                    </div>
 
-                        <motion.p
-                            variants={fadeUp}
-                            className="text-[#57534e] text-base leading-relaxed max-w-xl mb-12"
+                    <div className="text-right">
+                        <p className="font-mono text-[10px] uppercase text-white/60">
+                            {t("documented_since")}
+                        </p>
+                        <p className="font-serif text-3xl italic">{t("years_val")}</p>
+                    </div>
+                </div>
+
+                <div className="grid lg:grid-cols-12 gap-12">
+                    {/* LEFT: STORY + MAKER */}
+                    <div className="lg:col-span-5 space-y-12">
+                        {/* Maker image card */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 18 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.7, ease: "easeOut" }}
+                            className="relative overflow-hidden border border-white/12 bg-white/5 rounded-2xl"
                         >
-                            {t("description")}
-                        </motion.p>
+                            {/* Put your maker image here */}
+                            <div className="relative aspect-[4/3]">
+                                <Image
+                                    src="/images/maker.jpg"
+                                    alt="The maker"
+                                    fill
+                                    className="object-cover object-top grayscale-75"
+                                    sizes="(max-width: 1024px) 100vw, 40vw"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+                            </div>
 
-                        <motion.div variants={fadeUp} className="flex items-center gap-12">
-                            <div>
-                                <p className="font-display text-4xl md:text-5xl">{t("years_val")}</p>
-                                <p className="text-[#78716c] text-sm mt-1">
-                                    {t("years")}
+                            <div className="p-6">
+                                <p className="mt-2 font-serif text-xl italic text-[#e7e1d7]">
+                                    {t("maker_quote")}
                                 </p>
                             </div>
 
-                            <div className="h-14 w-px bg-[#d6d3d1]" />
+                            {/* corner mark */}
+                            <div className="pointer-events-none absolute top-0 right-0 p-3 opacity-70">
+                                <div className="w-5 h-5 border-t border-r border-white/50" />
+                            </div>
+                        </motion.div>
 
-                            <div>
-                                <p className="font-display text-4xl md:text-5xl">{t("clients_val")}</p>
-                                <p className="text-[#78716c] text-sm mt-1">
-                                    {t("clients")}
-                                </p>
+                        {/* Story block */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={isInView ? { opacity: 1, x: 0 } : {}}
+                            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
+                            className="relative p-1 border-l-2 border-white/30 pl-8"
+                        >
+                            <p className="font-serif text-xl leading-relaxed italic text-[#cfc8bd]">
+                                {t("description")}
+                            </p>
+
+                            {/* THE "WAX SEAL" STAMP (white now) */}
+                            <div className="mt-12 w-24 h-24 rounded-full border border-white/25 flex items-center justify-center -rotate-12 bg-white/5 backdrop-blur-sm">
+                                <div className="text-center">
+                                    <p className="font-mono text-[8px] uppercase tracking-tighter leading-none text-white/70">
+                                        {t("certified")}
+                                    </p>
+                                    <p className="font-serif text-lg italic text-[#f5f1ea]">
+                                        {t("origin")}
+                                    </p>
+                                    <p className="font-mono text-[8px] uppercase tracking-tighter leading-none text-white/70">
+                                        {t("tuscany")}
+                                    </p>
+                                </div>
                             </div>
                         </motion.div>
                     </div>
 
-                    {/* RIGHT */}
-                    <div className="space-y-6">
-                        {features.map((feature) => (
-                            <motion.div
-                                key={feature.number}
-                                variants={fadeRight}
-                                className="
-                  group flex gap-6 p-6 rounded-xl
-                  bg-white/60 backdrop-blur
-                  border border-[#e7e5e4]
-                  hover:border-[#c08a5a]/50
-                  hover:shadow-[0_20px_60px_-20px_rgba(192,138,90,0.35)]
-                  transition-all duration-300
-                "
-                            >
-                                <span className="font-display text-3xl text-[#c08a5a]/40 group-hover:text-[#c08a5a] transition-colors">
-                                    {feature.number}
-                                </span>
+                    {/* RIGHT: WORKFLOW */}
+                    <div className="lg:col-span-7">
+                        <div className="space-y-4">
+                            {features.map((feature, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ duration: 0.65, ease: "easeOut", delay: 0.15 + i * 0.1 }}
+                                    className="group relative border border-white/12 p-8 hover:bg-white/5 transition-all cursor-default"
+                                >
 
-                                <div>
-                                    <h3 className="font-display text-lg mb-1">
+                                    <h3 className="font-serif text-3xl mb-4 italic group-hover:pl-4 transition-all duration-300">
                                         {feature.title}
                                     </h3>
-                                    <p className="text-[#78716c] text-sm leading-relaxed">
+
+                                    <p className="font-serif text-[#c7beb2] text-base leading-relaxed opacity-80 max-w-lg">
                                         {feature.description}
                                     </p>
-                                </div>
-                            </motion.div>
-                        ))}
+
+                                    {/* DECORATIVE: Drafting "Crosshairs" */}
+                                    <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="w-4 h-4 border-t border-r border-white/70" />
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
-                </motion.div>
+                </div>
+
+                {/* BOTTOM FOOTER */}
+                <div className="mt-24 pt-8 border-t border-dashed border-white/15 flex justify-between items-center opacity-50">
+                    <span className="font-serif italic text-sm underline underline-offset-4">
+                        {t("signed_by")}
+                    </span>
+                </div>
             </div>
         </section>
     );
