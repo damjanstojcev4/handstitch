@@ -83,7 +83,7 @@ export const HeroCarousel = () => {
                         x: { type: "spring", stiffness: 300, damping: 30 },
                         opacity: { duration: 0.2 }
                     }}
-                    className="absolute inset-0"
+                    className="absolute inset-0 grayscale-75"
                 >
                     <Image
                         src={slides[current].image}
