@@ -16,11 +16,12 @@ export const HeroNavigation = () => {
     const basePath = pathname.replace(/^\/(en|mk)/, "");
 
     const navItems = [
-        { key: "men", label: t("men") },
-        { key: "women", label: t("women") },
-        { key: "customize", label: t("customize") },
-        { key: "about", label: t("about") },
-        { key: "contact", label: t("contact") },
+        { key: "men", label: t("men"), href: "#men" },
+        { key: "women", label: t("women"), href: "#women" },
+        { key: "customize", label: t("customize"), href: "#builder" },
+        { key: "about", label: t("about"), href: "#about" },
+        { key: "contact", label: t("contact"), href: "#contact" },
+        { key: "voucher", label: t("voucher"), href: "#voucher" },
     ];
 
     // Close on click outside
@@ -49,14 +50,14 @@ export const HeroNavigation = () => {
                 href={`/en${basePath}`}
                 className={`hover:text-white transition-colors ${pathname.startsWith("/en") ? "text-white" : ""}`}
             >
-                EN
+                {t("en")}
             </Link>
             <span className="w-px h-3 bg-white/20" />
             <Link
                 href={`/mk${basePath}`}
                 className={`hover:text-white transition-colors ${pathname.startsWith("/mk") ? "text-white" : ""}`}
             >
-                MK
+                {t("mk")}
             </Link>
         </div>
     );
@@ -73,7 +74,7 @@ export const HeroNavigation = () => {
                 {/* Left (Desktop) */}
                 <div className="hidden lg:flex items-center gap-8 flex-1 text-white">
                     {navItems.slice(0, 3).map((item) => (
-                        <a key={item.key} href={`#${item.key}`} className="hero-nav-link">
+                        <a key={item.key} href={item.href} className="hero-nav-link">
                             {item.label}
                         </a>
                     ))}
@@ -95,24 +96,16 @@ export const HeroNavigation = () => {
                 {/* Right (Desktop) */}
                 <div className="hidden lg:flex items-center gap-8 flex-1 justify-end text-white">
                     {navItems.slice(3).map((item) => (
-                        <a key={item.key} href={`#${item.key}`} className="hero-nav-link">
+                        <a key={item.key} href={item.href} className="hero-nav-link">
                             {item.label}
                         </a>
                     ))}
 
                     <div className="flex items-center gap-6 ml-4">
                         <LocaleSwitcher />
-                        <button className="hero-icon-btn">
-                            <Search className="w-5 h-5" strokeWidth={1.5} />
-                        </button>
-                        <button className="hero-icon-btn">
-                            <User className="w-5 h-5" strokeWidth={1.5} />
-                        </button>
-                        <button className="hero-icon-btn relative">
-                            <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
-                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent text-accent-foreground text-[10px] flex items-center justify-center rounded-full">
-                                0
-                            </span>
+
+                        <button className="hero-icon-btn relative" aria-label={t("shopping_bag") || "Shopping bag"}>
+                            <ShoppingBag className="w-5 h-5" strokeWidth={2} />
                         </button>
                     </div>
                 </div>
@@ -120,12 +113,15 @@ export const HeroNavigation = () => {
                 {/* Mobile */}
                 <div className="flex lg:hidden items-center gap-4 ml-auto text-white">
                     <LocaleSwitcher />
-                    <button className="hero-icon-btn">
-                        <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
+                    <button className="hero-icon-btn" aria-label={t("shopping_bag") || "Shopping bag"}>
+                        <ShoppingBag className="w-5 h-5" strokeWidth={2} />
                     </button>
                     <button
                         className="hero-icon-btn"
                         onClick={() => setIsOpen((prev) => !prev)}
+                        aria-label={isOpen ? "Close menu" : "Open menu"}
+                        aria-expanded={isOpen}
+                        aria-controls="mobile-menu"
                     >
                         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
@@ -146,6 +142,7 @@ export const HeroNavigation = () => {
 
                         {/* Dropdown panel */}
                         <motion.div
+                            id="mobile-menu"
                             ref={dropdownRef}
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -164,20 +161,16 @@ export const HeroNavigation = () => {
                                 {navItems.map((item) => (
                                     <a
                                         key={item.key}
-                                        href={`#${item.key}`}
+                                        href={item.href}
                                         onClick={() => setIsOpen(false)}
                                         className="hover:text-gray-300 transition-colors"
                                     >
                                         {item.label}
                                     </a>
                                 ))}
-
                                 <div className="flex gap-5 pt-4 border-t border-white/20">
-                                    <button>
-                                        <Search className="w-5 h-5" strokeWidth={1.5} />
-                                    </button>
-                                    <button>
-                                        <User className="w-5 h-5" strokeWidth={1.5} />
+                                    <button aria-label={t("search") || "Search"}>
+                                        <Search className="w-5 h-5" strokeWidth={2} />
                                     </button>
                                 </div>
                             </div>
