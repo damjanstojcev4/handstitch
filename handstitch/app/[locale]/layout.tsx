@@ -95,8 +95,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <html lang={locale} className="scroll-smooth">
-      <body className="antialiased">
+    <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
+      <body className="antialiased" suppressHydrationWarning>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <BackgroundCanvas />
           <div className="relative z-10 min-h-screen">

@@ -4,7 +4,13 @@
         "women": "Women",
         "customize": "Customize",
         "about": "About",
-        "contact": "Contact"
+        "contact": "Contact",
+        "voucher": "Voucher",
+        "logo_alt": "Handstitch Logo",
+        "en": "EN",
+        "mk": "MK",
+        "shopping_bag": "Shopping Bag",
+        "search": "Search"
     },
     "hero": {
         "slide1": {
@@ -23,11 +29,8 @@
         "shop_women": "Shop Women"
     },
     "about": {
-        "story": "Our Story",
         "title": "Crafted with Purpose & Care",
         "description": "For over a decade, our workshop has been dedicated to creating leather goods that stand the test of time. Each wallet that leaves our hands carries the passion and precision of true craftsmanship.",
-        "years": "Years of Craft",
-        "clients": "Happy Clients",
         "features": {
             "leather": {
                 "title": "Full-Grain Leather",
@@ -43,11 +46,15 @@
             }
         },
         "years_val": "10+",
-        "clients_val": "5k+"
+        "documented_since": "Documented Since",
+        "maker_quote": "Every stitch is a promise of quality and durability.",
+        "certified": "Certified",
+        "origin": "Origin",
+        "tuscany": "Tuscany",
+        "signed_by": "Hand-signed by the Maker"
     },
     "gallery": {
         "title": "Our Most Popular Products",
-        "subtitle": "Can't find what you're looking for?",
         "cta": "Build your own",
         "items": {
             "g-1": "Classic Black Bifold",
@@ -59,7 +66,9 @@
             "g-7": "Deep Brown Tones",
             "g-8": "Studio Essentials",
             "g-9": "The Finished Piece"
-        }
+        },
+        "visual_appendix": "Visual_Appendix // Collection_01",
+        "no_digital": "All images captured in-atelier // No digital synthesis"
     },
     "configurator": {
         "title": "Custom Wallet Builder",
@@ -72,6 +81,68 @@
             "back": "Back",
             "detail": "Detail",
             "360": "360"
+        },
+        "drop_hint": "Drop a part to add",
+        "active_parts": "Active parts",
+        "none_selected": "None selected",
+        "remove": "Remove",
+        "parts": {
+            "CARD_HOLDER_1": "Card Holder 1",
+            "CARD_HOLDER_2": "Card Holder 2",
+            "CARD_HOLDER_3": "Card Holder 3",
+            "CARD_HOLDER_4": "Card Holder 4",
+            "MONEY_POCKET": "Money Pocket"
+        },
+        "step": "Step",
+        "pick": "Pick",
+        "done": "Done",
+        "step_completed": "Step completed",
+        "step_pending": "Selection required",
+        "tap_to_add": "Tap to add",
+        "drag_to_add": "Drag to add",
+        "remove_short": "Remove",
+        "add_short": "Add",
+        "coming_soon": "Coming soon",
+        "review_order": "Confirm Selection",
+        "reset": "Reset All",
+        "edit": "Back to Edit",
+        "confirm": "Finalize Concept",
+        "summary": "Configuration Summary",
+        "selected": "Selected",
+        "units": "Items",
+        "steps": {
+            "gender": {
+                "title": "Collection",
+                "subtitle": "Select the intended style",
+                "men": "Men's Line",
+                "women": "Women's Line",
+                "note": "Both collections feature the same premium full-grain leather."
+            },
+            "base": {
+                "title": "Base Model",
+                "subtitle": "Choose the foundation of your wallet",
+                "classic": "Classic Bifold V1",
+                "coming_soon": "Slim Fold (Soon)"
+            },
+            "parts": {
+                "title": "Components",
+                "tap": "Tap to add card holders and pockets",
+                "drag": "Drag and drop components to customize"
+            },
+            "stitch": {
+                "title": "Stitching",
+                "subtitle": "Choose the thread color for hand-stitching",
+                "white": "Natural White",
+                "black": "Deep Black",
+                "brown": "Chestnut Brown",
+                "red": "Heritage Red"
+            },
+            "review": {
+                "title": "Review & Confirm",
+                "subtitle": "Verify your custom configuration",
+                "config_details": "Configuration Details",
+                "completion_notice": "All selections are mandatory for finalization."
+            }
         }
     },
     "footer": {
@@ -80,7 +151,6 @@
         "about": "About",
         "gallery": "Gallery",
         "builder": "Build Your Own",
-        "contact": "Contact",
         "follow_title": "Follow",
         "rights": "All rights reserved.",
         "privacy": "Privacy Policy",
