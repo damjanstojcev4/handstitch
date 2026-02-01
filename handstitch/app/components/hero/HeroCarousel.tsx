@@ -70,7 +70,7 @@ export const HeroCarousel = () => {
     };
 
     return (
-        <div className="relative w-full h-full overflow-hidden bg-black">
+        <div className="relative w-full h-full overflow-hidden bg-transparent">
             <AnimatePresence initial={false} custom={direction}>
                 <motion.div
                     key={page}
@@ -121,10 +121,10 @@ export const HeroCarousel = () => {
             </div>
 
             {/* Controls */}
-            <button onClick={prev} className="hero-arrow left-6 z-20">
+            <button onClick={prev} className="hero-arrow left-6 z-20" aria-label="Previous slide">
                 <ChevronLeft />
             </button>
-            <button onClick={next} className="hero-arrow right-6 z-20">
+            <button onClick={next} className="hero-arrow right-6 z-20" aria-label="Next slide">
                 <ChevronRight />
             </button>
         </div>
