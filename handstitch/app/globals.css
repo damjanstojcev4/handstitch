@@ -1,3 +1,29 @@
 @import "tailwindcss";
 
+@theme {
+  --color-hero-overlay: rgba(0, 0, 0, 0.4);
+}
+
+@layer components {
+  .hero-nav-link {
+    @apply text-sm font-medium tracking-wide transition-colors hover:text-white/70;
+  }
+
+  .hero-icon-btn {
+    @apply p-2 transition-colors hover:text-white/70;
+  }
+
+  .hero-btn {
+    @apply px-8 py-3 border border-white text-white text-sm tracking-widest uppercase transition-all hover:bg-white hover:text-black;
+  }
+
+  .hero-arrow {
+    @apply absolute top-1/2 -translate-y-1/2 p-2 text-white/50 hover:text-white transition-colors;
+  }
+
+  .display-heading {
+    @apply font-serif italic tracking-tight;
+  }
+}
+
 

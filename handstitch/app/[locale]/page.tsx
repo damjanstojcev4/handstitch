@@ -1,7 +1,7 @@
 import { HeroSection } from "../components/hero/HeroSection";
 import WalletConfigurator from "../components/canvas/WalletConfigurator";
-import AboutSection from "../components/about/AboutSection";
-import ProductMasonryGallery from "../components/gallery/ProductMasonryGallery";
+import AboutSection3 from "../components/about/AboutSection";
+import Gallery from "../components/gallery/Gallery";
 import { getTranslations } from "next-intl/server";
 import Footer from "../components/footer/Footer";
 
@@ -12,12 +12,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     return (
         <main className="w-full">
             <HeroSection />
-            <AboutSection />
-            <ProductMasonryGallery />
-
+            <div id="men">
+                <AboutSection3 />
+            </div>
             <section
                 id="builder"
-                className="py-24 md:py-32 bg-[#faf9f6] text-[#1c1917]"
+                className="py-24 md:py-32 bg-transparent text-[#f5f1ea]"
             >
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="mb-10">
@@ -29,6 +29,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     <WalletConfigurator />
                 </div>
             </section>
+            <div id="women">
+                <Gallery />
+            </div>
             <Footer />
         </main>
     );
