@@ -1,21 +1,30 @@
 "use client";
 
-import { Instagram, Facebook, Music2 } from "lucide-react"; // Music2 = TikTok icon vibe
+import Image from "next/image";
+import { Instagram, Facebook, Music2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function Footer() {
     const t = useTranslations("footer");
 
     return (
-        <footer className="bg-transparent text-[#e7e5e4]">
+        <footer className="bg-zinc-900 text-[#e7e5e4] border-t border-[#292524]">
             <div className="max-w-7xl mx-auto px-6 py-16">
                 {/* Top */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
                     {/* Brand */}
                     <div className="md:col-span-2">
-                        <h3 className="font-display text-2xl tracking-[0.3em] mb-4">
-                            HANDSTITCH
-                        </h3>
+                        {/* Logo Image */}
+                        <div className="mb-6">
+                            <Image
+                                src="/images/logo.png"
+                                alt="Handstitch Logo"
+                                width={120}
+                                height={120}
+                                className="h-25 w-auto object-contain brightness-0 invert"
+                                priority
+                            />
+                        </div>
                         <p className="text-sm text-[#a8a29e] max-w-md leading-relaxed">
                             {t("description")}
                         </p>
@@ -40,8 +49,9 @@ export default function Footer() {
                         </h4>
                         <div className="flex items-center gap-4">
                             <a
-                                href="https://instagram.com"
+                                href="https://www.instagram.com/handstitch_mk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 aria-label="Instagram"
                                 className="p-2 rounded-full border border-[#44403c] hover:border-[#c08a5a] hover:text-[#c08a5a] transition-all"
                             >
@@ -49,8 +59,9 @@ export default function Footer() {
                             </a>
 
                             <a
-                                href="https://tiktok.com"
+                                href="https://www.instagram.com/handstitch_mk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 aria-label="TikTok"
                                 className="p-2 rounded-full border border-[#44403c] hover:border-[#c08a5a] hover:text-[#c08a5a] transition-all"
                             >
@@ -58,8 +69,9 @@ export default function Footer() {
                             </a>
 
                             <a
-                                href="https://facebook.com"
+                                href="https://www.instagram.com/handstitch_mk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 aria-label="Facebook"
                                 className="p-2 rounded-full border border-[#44403c] hover:border-[#c08a5a] hover:text-[#c08a5a] transition-all"
                             >
