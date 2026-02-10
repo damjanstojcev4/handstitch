@@ -5,7 +5,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import "../globals.css";
-import BackgroundCanvas from "../components/common/BackgroundCanvas";
 
 // Type definitions
 type Props = {
@@ -96,12 +95,9 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
+      <body className="antialiased bg-black" suppressHydrationWarning>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <BackgroundCanvas />
-          <div className="relative z-10 min-h-screen">
-            {children}
-          </div>
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>
