@@ -4,129 +4,95 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-
-import heroLeather from "@/public/images/image1.jpg";
-import heroCraft from "@/public/images/image2.jpg";
-import heroWallets from "@/public/images/image3.jpg";
-
-// Slides are now defined inside the component to use translations
-
 import { useTranslations } from "next-intl";
 
 export const HeroCarousel = () => {
     const [[page, direction], setPage] = useState([0, 0]);
-    const [autoPlay, setAutoPlay] = useState(true);
     const t = useTranslations("hero");
 
     const slides = [
         {
-            image: heroLeather,
+            video: "/images/video1.mp4",
+            image: "/images/image1.jpg",
             title: t("slide1.title"),
             subtitle: t("slide1.subtitle"),
         },
         {
-            image: heroCraft,
+            video: null,
+            image: "/images/image2.jpg",
             title: t("slide2.title"),
             subtitle: t("slide2.subtitle"),
-        },
-        {
-            image: heroWallets,
-            title: t("slide3.title"),
-            subtitle: t("slide3.subtitle"),
-        },
+        }
     ];
 
-    // We can calculate current index from page (which can go infinite)
     const current = Math.abs(page % slides.length);
-
-    const paginate = useCallback((newDirection: number) => {
-        setPage([page + newDirection, newDirection]);
-    }, [page]);
-
-    const next = useCallback(() => paginate(1), [paginate]);
-    const prev = useCallback(() => paginate(-1), [paginate]);
+    const paginate = useCallback((dir: number) => setPage([page + dir, dir]), [page]);
 
     useEffect(() => {
-        if (!autoPlay) return;
-        const id = setInterval(next, 5000);
-        return () => clearInterval(id);
-    }, [autoPlay, next]);
-
-    const variants = {
-        enter: (direction: number) => ({
-            x: direction > 0 ? 1000 : -1000,
-            opacity: 0
-        }),
-        center: {
-            zIndex: 1,
-            x: 0,
-            opacity: 1
-        },
-        exit: (direction: number) => ({
-            zIndex: 0,
-            x: direction < 0 ? 1000 : -1000,
-            opacity: 0
-        })
-    };
+        const timer = setInterval(() => paginate(1), 8000);
+        return () => clearInterval(timer);
+    }, [paginate]);
 
     return (
-        <div className="relative w-full h-full overflow-hidden bg-transparent">
+        <div className="relative w-full h-screen overflow-hidden bg-black">
             <AnimatePresence initial={false} custom={direction}>
                 <motion.div
                     key={page}
                     custom={direction}
-                    variants={variants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{
-                        x: { type: "spring", stiffness: 300, damping: 30 },
-                        opacity: { duration: 0.2 }
-                    }}
-                    className="absolute inset-0 grayscale-75"
+                    initial={{ scale: 1.1, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}
+                    className="absolute inset-0"
                 >
-                    <Image
-                        src={slides[current].image}
-                        alt={slides[current].title}
-                        fill
-                        priority
-                        className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-hero-overlay" />
+                    {slides[current].video ? (
+                        <video autoPlay muted loop playsInline className="w-full h-full object-cover brightness-[0.6]">
+                            <source src={slides[current].video} type="video/mp4" />
+                        </video>
+                    ) : (
+                        <Image src={slides[current].image} alt="hero" fill className="object-cover brightness-[0.6]" />
+                    )}
                 </motion.div>
             </AnimatePresence>
 
-            {/* Content */}
-            <div className="absolute inset-0 flex items-center z-10 pointer-events-none">
-                <div className="px-6 md:px-12 lg:px-20 max-w-2xl pointer-events-auto">
-                    <motion.div
-                        key={current}
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                    >
-                        <h1 className="display-heading text-xl md:text-3xl lg:text-4xl text-hero mb-4 text-white">
-                            {slides[current].title}
-                        </h1>
-                        <p className="text-hero/80 text-4xl md:text-6xl lg:text-7xl mb-8 text-white whitespace-normal lg:whitespace-nowrap">
-                            {slides[current].subtitle}
-                        </p>
+            {/* Content Layer: Bold Top-Left Alignment */}
+            <div className="absolute inset-0 flex items-start justify-start px-6 md:px-12 lg:px-20 pt-32 md:pt-40 z-20">
+                <motion.div
+                    key={`content-${current}`}
+                    initial={{ x: -40, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    className="max-w-4xl"
+                >
+                    <h2 className="text-white text-sm md:text-base tracking-[0.3em] uppercase font-semibold mb-4 drop-shadow-md">
+                        {slides[current].title}
+                    </h2>
 
-                        <div className="flex gap-4 text-white">
-                            <a href="#men" className="hero-btn">{t("shop_men")}</a>
-                            <a href="#women" className="hero-btn">{t("shop_women")}</a>
-                        </div>
-                    </motion.div>
-                </div>
+                    <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-semibold leading-[0.9] mb-10 tracking-tighter uppercase drop-shadow-2xl">
+                        {slides[current].subtitle}
+                    </h1>
+
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <button className="px-12 py-4 bg-white text-black font-semibold text-sm uppercase tracking-widest hover:bg-transparent hover:text-white border-2 border-white transition-all duration-300">
+                            {t("shop_men")}
+                        </button>
+                        <button className="px-12 py-4 bg-transparent text-white font-semibold text-sm uppercase tracking-widest border-2 border-white hover:bg-white hover:text-black transition-all duration-300">
+                            {t("shop_women")}
+                        </button>
+                    </div>
+                </motion.div>
             </div>
 
-            {/* Controls */}
-            <button onClick={prev} className="hero-arrow left-6 z-20" aria-label="Previous slide">
-                <ChevronLeft />
-            </button>
-            <button onClick={next} className="hero-arrow right-6 z-20" aria-label="Next slide">
-                <ChevronRight />
-            </button>
+            {/* Heavy-Duty Controls */}
+            <div className="absolute bottom-10 left-6 md:left-12 lg:left-20 z-30 flex items-center gap-8">
+                <button onClick={() => paginate(-1)} className="group text-white/50 hover:text-white transition-colors">
+                    <ChevronLeft size={48} strokeWidth={2.5} />
+                </button>
+                <div className="h-12 w-[2px] bg-white/20" />
+                <button onClick={() => paginate(1)} className="group text-white/50 hover:text-white transition-colors">
+                    <ChevronRight size={48} strokeWidth={2.5} />
+                </button>
+            </div>
         </div>
     );
 };

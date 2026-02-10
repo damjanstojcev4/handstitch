@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, User, ShoppingBag, X, Menu } from "lucide-react";
+import { ShoppingBag, X, Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,10 +10,18 @@ import { usePathname } from "next/navigation";
 
 export const HeroNavigation = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
     const t = useTranslations("nav");
     const pathname = usePathname();
     const basePath = pathname.replace(/^\/(en|mk)/, "");
+
+    // Monitor scroll to change header style
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 50);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const navItems = [
         { key: "men", label: t("men"), href: "#men" },
@@ -24,160 +32,112 @@ export const HeroNavigation = () => {
         { key: "voucher", label: t("voucher"), href: "#voucher" },
     ];
 
-    // Close on click outside
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(e.target as Node)
-            ) {
-                setIsOpen(false);
-            }
-        };
-
-        if (isOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isOpen]);
-
-    const LocaleSwitcher = () => (
-        <div className="flex items-center gap-2 text-xs font-semibold tracking-widest text-white/70">
-            <Link
-                href={`/en${basePath}`}
-                className={`hover:text-white transition-colors ${pathname.startsWith("/en") ? "text-white" : ""}`}
-            >
-                {t("en")}
-            </Link>
-            <span className="w-px h-3 bg-white/20" />
-            <Link
-                href={`/mk${basePath}`}
-                className={`hover:text-white transition-colors ${pathname.startsWith("/mk") ? "text-white" : ""}`}
-            >
-                {t("mk")}
-            </Link>
-        </div>
-    );
-
     return (
         <motion.nav
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="absolute top-0 left-0 right-0 z-50 px-6 md:px-12 lg:px-20 py-6"
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            className={`fixed top-0 left-0 right-0 z-[100] px-6 md:px-12 lg:px-20 py-4 transition-all duration-300 ${scrolled ? "bg-black py-3 shadow-2xl" : "bg-transparent py-6"
+                }`}
         >
-            <div className="flex items-center justify-between relative z-50">
-
-                {/* Left (Desktop) */}
-                <div className="hidden lg:flex items-center gap-8 flex-1 text-white">
+            <div className="flex items-center justify-between max-w-[1800px] mx-auto">
+                {/* Left Side */}
+                <div className="hidden lg:flex items-center gap-8 flex-1">
                     {navItems.slice(0, 3).map((item) => (
-                        <a key={item.key} href={item.href} className="hero-nav-link">
-                            {item.label}
-                        </a>
+                        <NavLink key={item.key} href={item.href}>{item.label}</NavLink>
                     ))}
                 </div>
 
-                {/* Logo */}
-                <div className="lg:absolute lg:left-1/2 lg:-translate-x-1/2">
-                    <Link href="/" aria-label="Home" className="block">
-                        <Image
-                            src="/images/logo.png"
-                            alt={t("logo_alt")}
-                            width={300}
-                            height={300}
-                            className="h-16 md:h-20 w-auto object-contain brightness-0 invert"
-                        />
-                    </Link>
-                </div>
+                {/* Central Logo */}
+                <Link href="/" className="relative z-50 flex-shrink-0">
+                    <Image
+                        src="/images/logo.png"
+                        alt="Logo"
+                        width={180}
+                        height={60}
+                        className={`transition-all duration-300 brightness-0 invert ${scrolled ? "h-12 w-auto" : "h-16 w-auto"
+                            }`}
+                    />
+                </Link>
 
-                {/* Right (Desktop) */}
-                <div className="hidden lg:flex items-center gap-8 flex-1 justify-end text-white">
+                {/* Right Side */}
+                <div className="hidden lg:flex items-center gap-8 flex-1 justify-end">
                     {navItems.slice(3).map((item) => (
-                        <a key={item.key} href={item.href} className="hero-nav-link">
-                            {item.label}
-                        </a>
+                        <NavLink key={item.key} href={item.href}>{item.label}</NavLink>
                     ))}
-
-                    <div className="flex items-center gap-6 ml-4">
-                        <LocaleSwitcher />
-
-                        <button className="hero-icon-btn relative" aria-label={t("shopping_bag") || "Shopping bag"}>
-                            <ShoppingBag className="w-5 h-5" strokeWidth={2} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Mobile */}
-                <div className="flex lg:hidden items-center gap-4 ml-auto text-white">
-                    <LocaleSwitcher />
-                    <button className="hero-icon-btn" aria-label={t("shopping_bag") || "Shopping bag"}>
-                        <ShoppingBag className="w-5 h-5" strokeWidth={2} />
-                    </button>
-                    <button
-                        className="hero-icon-btn"
-                        onClick={() => setIsOpen((prev) => !prev)}
-                        aria-label={isOpen ? "Close menu" : "Open menu"}
-                        aria-expanded={isOpen}
-                        aria-controls="mobile-menu"
-                    >
-                        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                    <button className="text-white hover:opacity-70 transition-opacity">
+                        <ShoppingBag className="w-6 h-6" strokeWidth={1.5} />
                     </button>
                 </div>
+
+                {/* Mobile Toggle */}
+                <button
+                    className="lg:hidden text-white relative z-[110] p-2 -mr-2"
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-label="Toggle menu"
+                >
+                    {isOpen ? <X size={32} /> : <Menu size={32} />}
+                </button>
             </div>
 
-            {/* Mobile Dropdown */}
+            {/* Mobile Menu Overlay - Portal-like behavior (inside AnimatePresence) */}
             <AnimatePresence>
                 {isOpen && (
-                    <>
-                        {/* Click-outside backdrop */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-40"
-                        />
-
-                        {/* Dropdown panel */}
-                        <motion.div
-                            id="mobile-menu"
-                            ref={dropdownRef}
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.25 }}
-                            className="
-                absolute right-6 mt-6 z-50 w-72
-                rounded-2xl
-                bg-black/90
-                border border-white/10
-                shadow-xl
-                text-white
-              "
-                        >
-                            <div className="flex flex-col py-6 px-6 gap-5 text-lg">
-                                {navItems.map((item) => (
-                                    <a
-                                        key={item.key}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black z-[105] flex flex-col p-8 pt-32 lg:hidden"
+                    >
+                        <div className="flex flex-col gap-6">
+                            {navItems.map((item, i) => (
+                                <motion.div
+                                    key={item.key}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.1 }}
+                                >
+                                    <Link
                                         href={item.href}
                                         onClick={() => setIsOpen(false)}
-                                        className="hover:text-gray-300 transition-colors"
+                                        className="text-4xl font-semibold uppercase tracking-tighter text-white hover:text-white/60 transition-colors"
                                     >
                                         {item.label}
-                                    </a>
-                                ))}
-                                <div className="flex gap-5 pt-4 border-t border-white/20">
-                                    <button aria-label={t("search") || "Search"}>
-                                        <Search className="w-5 h-5" strokeWidth={2} />
-                                    </button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </>
+                                    </Link>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Mobile Language Switcher */}
+                        <div className="mt-auto pt-10 border-t border-white/10 flex gap-8">
+                            <Link
+                                href={`/en${basePath}`}
+                                className={`text-sm font-mono tracking-[0.2em] uppercase ${pathname.startsWith("/en") ? "text-white" : "text-white/30"}`}
+                                onClick={() => setIsOpen(false)}
+                            >
+                                English
+                            </Link>
+                            <Link
+                                href={`/mk${basePath}`}
+                                className={`text-sm font-mono tracking-[0.2em] uppercase ${pathname.startsWith("/mk") ? "text-white" : "text-white/30"}`}
+                                onClick={() => setIsOpen(false)}
+                            >
+                                Македонски
+                            </Link>
+                        </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Subtle Top Shadow for Mobile Visibility */}
+            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/40 to-transparent pointer-events-none lg:hidden" />
         </motion.nav>
     );
 };
+
+// Sub-component for animated links
+const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+    <Link href={href} className="group relative text-white text-sm font-medium tracking-widest uppercase">
+        {children}
+        <span className="absolute -bottom-1 left-0 w-0 h-px bg-white transition-all duration-300 group-hover:w-full" />
+    </Link>
+);
