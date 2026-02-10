@@ -1,11 +1,11 @@
 import { HeroNavigation } from "./HeroNavigation";
-import { HeroCarousel } from "./HeroCarousel";
+import { VideoHero } from "./VideoHero";
 
 export const HeroSection = () => {
     return (
         <section className="relative h-screen w-full bg-transparent">
+            <VideoHero />
             <HeroNavigation />
-            <HeroCarousel />
         </section>
     );
 };
