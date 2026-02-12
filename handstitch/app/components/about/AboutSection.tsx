@@ -17,7 +17,7 @@ const AboutSection = () => {
     ];
 
     return (
-        <section id="about" ref={ref} className="bg-black text-white py-24 lg:py-36 overflow-hidden">
+        <section id="about" ref={ref} className="text-white py-24 lg:py-36 overflow-hidden">
             <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20">
 
                 {/* 1. REFINED HEADER: Matches Hero Typography */}
@@ -85,17 +85,9 @@ const AboutSection = () => {
                     </div>
                 </div>
 
-                {/* 4. FOOTER: Technical Minimalism */}
-                <div className="mt-24 flex flex-col md:flex-row justify-between items-center gap-8 border-t border-white/10 pt-10">
-                    <div className="flex gap-12 font-mono text-[9px] uppercase tracking-[0.3em] opacity-30">
-                        <p>{t("certified")}</p>
-                        <p>{t("tuscany")}</p>
-                    </div>
-                    <p className="text-xl font-semibold uppercase italic tracking-tighter opacity-80">
-                        — {t("signed_by")}
-                    </p>
-                </div>
             </div>
+            {/* Full width bottom border */}
+            <div className="border-t border-white/10 mt-24" />
         </section>
     );
 };

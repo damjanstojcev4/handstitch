@@ -36,7 +36,7 @@ export const HeroNavigation = () => {
         <motion.nav
             initial={{ y: -100 }}
             animate={{ y: 0 }}
-            className={`fixed top-0 left-0 right-0 z-[100] px-6 md:px-12 lg:px-20 py-4 transition-all duration-300 ${scrolled ? "bg-black py-3 shadow-2xl" : "bg-transparent py-6"
+            className={`fixed top-0 left-0 right-0 z-[100] px-6 md:px-12 lg:px-20 py-4 transition-all duration-300 ${scrolled ? "bg-neutral-950/80 backdrop-blur-md py-3 shadow-2xl" : "bg-transparent py-6"
                 }`}
         >
             <div className="flex items-center justify-between max-w-[1800px] mx-auto">
