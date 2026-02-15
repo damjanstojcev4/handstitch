@@ -21,15 +21,12 @@ const AboutSection = () => {
             <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20">
 
                 {/* 1. REFINED HEADER: Matches Hero Typography */}
-                <div className="relative border-t border-white/20 pt-10 mb-20 flex flex-col md:flex-row justify-between items-start gap-8">
+                <div className="relative mb-20 flex flex-col md:flex-row justify-between items-start gap-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={isInView ? { opacity: 1, y: 0 } : {}}
                         className="max-w-2xl"
                     >
-                        <span className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40 mb-6 block">
-                            Est. {t("years_val")} // {t("origin")}
-                        </span>
                         <h2 className="text-5xl md:text-7xl font-semibold uppercase leading-[0.95] tracking-tighter drop-shadow-sm">
                             {t("title")}
                         </h2>
@@ -86,8 +83,6 @@ const AboutSection = () => {
                 </div>
 
             </div>
-            {/* Full width bottom border */}
-            <div className="border-t border-white/10 mt-24" />
         </section>
     );
 };
