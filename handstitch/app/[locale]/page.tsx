@@ -15,20 +15,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <div id="men">
                 <AboutSection3 />
             </div>
-            <section
-                id="builder"
-                className="py-24 md:py-32 bg-transparent text-[#f5f1ea]"
-            >
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="mb-10">
-                        <h1 className="font-display text-3xl md:text-4xl lg:text-5xl leading-tight">
-                            {t("title")}
-                        </h1>
-                    </div>
-
-                    <WalletConfigurator />
-                </div>
-            </section>
+            <WalletConfigurator />
             <div id="women">
                 <Gallery />
             </div>

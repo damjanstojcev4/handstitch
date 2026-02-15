@@ -95,7 +95,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
-      <body className="antialiased bg-neutral-800" suppressHydrationWarning>
+      <body className="antialiased bg-stone-800" suppressHydrationWarning>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>
