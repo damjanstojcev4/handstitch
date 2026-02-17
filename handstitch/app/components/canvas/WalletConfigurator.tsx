@@ -34,16 +34,12 @@ const DRAG_ITEMS: { id: PartId; label: string }[] = [
 ];
 
 function StepShell({
-  id,
   title,
-  subtitle,
   done,
   className,
   children,
 }: {
-  id: number;
   title: string;
-  subtitle?: string;
   done: boolean;
   className?: string;
   children: React.ReactNode;
@@ -61,29 +57,7 @@ function StepShell({
           <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
             {title}
           </h3>
-          {subtitle && (
-            <p className="text-[10px] text-white/40 mt-1 uppercase tracking-tight">
-              {subtitle}
-            </p>
-          )}
         </div>
-        {done && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="h-4 w-4 rounded-full bg-emerald-500 flex items-center justify-center"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="w-2.5 h-2.5 text-black"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="4"
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </motion.div>
-        )}
       </div>
       {children}
     </div>
@@ -211,7 +185,6 @@ export default function WalletConfigurator() {
           <div className="lg:col-span-5 space-y-4 pt-8 lg:pt-0">
             <div className="flex flex-col gap-3">
               <StepShell
-                id={0}
                 title={t("steps.gender.title")}
                 done={step0Done}
                 className="bg-white/[0.03] border-white/5"
@@ -235,7 +208,6 @@ export default function WalletConfigurator() {
               </StepShell>
 
               <StepShell
-                id={1}
                 title={t("steps.model.title")}
                 done={step1Done}
                 className="bg-white/[0.03] border-white/5"
@@ -259,7 +231,6 @@ export default function WalletConfigurator() {
               </StepShell>
 
               <StepShell
-                id={2}
                 title={t("steps.parts.title")}
                 done={step2Done}
                 className="bg-white/[0.03] border-white/5"
@@ -277,18 +248,12 @@ export default function WalletConfigurator() {
                       )}
                     >
                       {item.label}
-                      {config.enabled[item.id] ? (
-                        <span className="text-[9px] text-emerald-400">Added</span>
-                      ) : (
-                        <span className="opacity-40">+</span>
-                      )}
                     </button>
                   ))}
                 </div>
               </StepShell>
 
               <StepShell
-                id={3}
                 title={t("steps.stitch.title")}
                 done={step3Done}
                 className="bg-white/[0.03] border-white/5"
@@ -317,6 +282,7 @@ export default function WalletConfigurator() {
                 </div>
               </StepShell>
             </div>
+
 
             <div className="pt-10">
               <ReviewButton
