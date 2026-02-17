@@ -3,9 +3,13 @@
 import Image from "next/image";
 import { Instagram, Facebook, Music2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
     const t = useTranslations("footer");
+    const pathname = usePathname();
+    const locale = pathname.split('/')[1] || 'en';
 
     return (
         <footer className="bg-zinc-900 text-[#e7e5e4] border-t border-[#292524]">
@@ -28,6 +32,14 @@ export default function Footer() {
                         <p className="text-sm text-[#a8a29e] max-w-md leading-relaxed">
                             {t("description")}
                         </p>
+                        <div className="mt-8">
+                            <Link
+                                href={`/${locale}/customize`}
+                                className="inline-block px-8 py-3 bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-[#c08a5a] hover:text-white transition-all duration-300"
+                            >
+                                {t("builder")}
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Navigation */}
@@ -36,9 +48,9 @@ export default function Footer() {
                             {t("explore_title")}
                         </h4>
                         <ul className="space-y-3 text-sm text-[#a8a29e]">
-                            <li><a href="#about" className="hover:text-white transition-colors">{t("about")}</a></li>
-                            <li><a href="#gallery" className="hover:text-white transition-colors">{t("gallery")}</a></li>
-                            <li><a href="#builder" className="hover:text-white transition-colors">{t("builder")}</a></li>
+                            <li><Link href={`/${locale}/#about`} className="hover:text-white transition-colors">{t("about")}</Link></li>
+                            <li><Link href={`/${locale}/#gallery`} className="hover:text-white transition-colors">{t("gallery")}</Link></li>
+                            <li><Link href={`/${locale}/customize`} className="hover:text-white transition-colors">{t("builder")}</Link></li>
                         </ul>
                     </div>
 
