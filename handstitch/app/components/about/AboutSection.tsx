@@ -4,16 +4,20 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const AboutSection = () => {
     const t = useTranslations("about");
+    const pathname = usePathname();
+    const locale = pathname.split('/')[1] || 'en';
     const ref = useRef<HTMLElement | null>(null);
     const isInView = useInView(ref, { once: true, margin: "-10%" });
 
     const features = [
-        { id: "01", title: t("features.leather.title"), desc: t("features.leather.desc") },
-        { id: "02", title: t("features.stitched.title"), desc: t("features.stitched.desc") },
-        { id: "03", title: t("features.design.title"), desc: t("features.design.desc") },
+        { title: t("features.leather.title"), desc: t("features.leather.desc") },
+        { title: t("features.stitched.title"), desc: t("features.stitched.desc") },
+        { title: t("features.design.title"), desc: t("features.design.desc") },
     ];
 
     return (
@@ -30,6 +34,14 @@ const AboutSection = () => {
                         <h2 className="text-5xl md:text-7xl font-semibold uppercase leading-[0.95] tracking-tighter drop-shadow-sm">
                             {t("title")}
                         </h2>
+                        <div className="mt-8">
+                            <Link
+                                href={`/${locale}/customize`}
+                                className="inline-block px-10 py-4 border border-white/20 text-white text-xs font-bold uppercase tracking-[0.2em] hover:bg-white hover:text-black transition-all duration-500"
+                            >
+                                {t("customize_cta")}
+                            </Link>
+                        </div>
                     </motion.div>
                 </div>
 
@@ -47,7 +59,7 @@ const AboutSection = () => {
                                 src="/images/maker2.jpg"
                                 alt="The maker"
                                 fill
-                                className="object-cover grayscale brightness-90 hover:scale-105 transition-transform duration-[1.5s] ease-out"
+                                className="object-cover brightness-90 hover:scale-105 transition-transform duration-[1.5s] ease-out"
                             />
                             {/* Subtle Framing Detail */}
                             <div className="absolute inset-4 border border-white/10 pointer-events-none" />
@@ -64,10 +76,7 @@ const AboutSection = () => {
                                 transition={{ delay: 0.1 * i }}
                                 className="group py-10 border-b border-white/5 hover:border-white/40 transition-colors duration-500"
                             >
-                                <div className="flex items-start gap-10">
-                                    <span className="font-mono text-xs text-white/20 pt-2">
-                                        {feature.id}
-                                    </span>
+                                <div className="flex items-start">
                                     <div className="flex-1">
                                         <h3 className="text-3xl md:text-4xl font-semibold uppercase tracking-tight mb-4 transition-transform duration-300 group-hover:translate-x-2">
                                             {feature.title}
