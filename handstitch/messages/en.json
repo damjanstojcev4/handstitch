@@ -26,7 +26,8 @@
             "subtitle": "Discover your signature piece"
         },
         "shop_men": "Shop Men",
-        "shop_women": "Shop Women"
+        "shop_women": "Shop Women",
+        "customize": "Start Customizing"
     },
     "about": {
         "title": "Crafted with Purpose & Care",
@@ -51,7 +52,8 @@
         "certified": "Certified",
         "origin": "Origin",
         "tuscany": "Tuscany",
-        "signed_by": "Hand-signed by the Maker"
+        "signed_by": "Hand-signed by the Maker",
+        "customize_cta": "Build Your Own"
     },
     "gallery": {
         "title": "Our Most Popular Products",
