@@ -14,6 +14,7 @@ export const HeroNavigation = () => {
     const dropdownRef = useRef<HTMLDivElement | null>(null);
     const t = useTranslations("nav");
     const pathname = usePathname();
+    const locale = pathname.split('/')[1] || 'en';
     const basePath = pathname.replace(/^\/(en|mk)/, "");
 
     // Monitor scroll to change header style
@@ -24,12 +25,12 @@ export const HeroNavigation = () => {
     }, []);
 
     const navItems = [
-        { key: "men", label: t("men"), href: "#men" },
-        { key: "women", label: t("women"), href: "#women" },
-        { key: "customize", label: t("customize"), href: "#builder" },
-        { key: "about", label: t("about"), href: "#about" },
-        { key: "contact", label: t("contact"), href: "#contact" },
-        { key: "voucher", label: t("voucher"), href: "#voucher" },
+        { key: "men", label: t("men"), href: `/${locale}/#men` },
+        { key: "women", label: t("women"), href: `/${locale}/#women` },
+        { key: "customize", label: t("customize"), href: `/${locale}/customize` },
+        { key: "about", label: t("about"), href: `/${locale}/#about` },
+        { key: "contact", label: t("contact"), href: `/${locale}/#contact` },
+        { key: "voucher", label: t("voucher"), href: `/${locale}/#voucher` },
     ];
 
     return (
@@ -48,7 +49,7 @@ export const HeroNavigation = () => {
                 </div>
 
                 {/* Central Logo */}
-                <Link href="/" className="relative z-50 flex-shrink-0">
+                <Link href={`/${locale}`} className="relative z-50 flex-shrink-0">
                     <Image
                         src="/images/logo.png"
                         alt="Logo"

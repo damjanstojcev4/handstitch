@@ -2,9 +2,13 @@
 
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export const VideoHero = () => {
     const t = useTranslations("hero");
+    const pathname = usePathname();
+    const locale = pathname.split('/')[1] || 'en';
 
     // Single source of truth for the background
     const heroVideo = "/images/video1.mp4";
@@ -52,6 +56,12 @@ export const VideoHero = () => {
                         <button className="px-12 py-4 bg-transparent text-white font-semibold text-sm uppercase tracking-widest border-2 border-white hover:bg-white hover:text-black transition-all duration-300">
                             {t("shop_women")}
                         </button>
+                        <Link
+                            href={`/${locale}/customize`}
+                            className="px-12 py-4 bg-white text-black font-semibold text-sm uppercase tracking-widest border-2 border-white hover:bg-transparent hover:text-white transition-all duration-300 text-center"
+                        >
+                            {t("customize")}
+                        </Link>
                     </div>
                 </motion.div>
             </div>
