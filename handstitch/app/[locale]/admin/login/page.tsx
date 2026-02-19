@@ -1,12 +1,13 @@
 "use client";
-
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function AdminLoginPage() {
     const router = useRouter();
     const pathname = usePathname();
     const locale = pathname.split("/")[1] || "en";
+    const t = useTranslations("admin.login");
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -27,14 +28,14 @@ export default function AdminLoginPage() {
 
             const data = await res.json();
             if (!res.ok) {
-                setError(data?.message || "Login failed");
+                setError(data?.message || t("error_failed"));
                 return;
             }
 
             router.push(`/${locale}/admin`);
             router.refresh();
         } catch {
-            setError("Network error. Please try again.");
+            setError(t("error_network"));
         } finally {
             setLoading(false);
         }
@@ -44,8 +45,8 @@ export default function AdminLoginPage() {
         <section className="min-h-screen bg-white text-black flex items-center justify-center px-6">
             <div className="w-full max-w-md rounded-2xl border border-black/5 bg-black/[0.02] p-8">
                 <p className="text-[10px] uppercase tracking-[0.34em] text-black/45">Handstitch</p>
-                <h1 className="mt-2 text-xl font-semibold tracking-tight text-black/85">Admin Login</h1>
-                <p className="mt-2 text-sm text-black/55">Authorized staff only.</p>
+                <h1 className="mt-2 text-xl font-semibold tracking-tight text-black/85">{t("title")}</h1>
+                <p className="mt-2 text-sm text-black/55">{t("subtitle")}</p>
 
                 {error && (
                     <div className="mt-5 rounded-xl border border-black/5 bg-black/5 px-4 py-3 text-sm text-black/75">
@@ -56,7 +57,7 @@ export default function AdminLoginPage() {
                 <form onSubmit={onSubmit} className="mt-6 space-y-4">
                     <div>
                         <label className="block text-[10px] uppercase tracking-[0.28em] text-black/45">
-                            Email
+                            {t("email")}
                         </label>
                         <input
                             className="mt-2 w-full rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-sm text-black/85 outline-none focus:border-black/25"
@@ -70,7 +71,7 @@ export default function AdminLoginPage() {
 
                     <div>
                         <label className="block text-[10px] uppercase tracking-[0.28em] text-black/45">
-                            Password
+                            {t("password")}
                         </label>
                         <input
                             className="mt-2 w-full rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-sm text-black/85 outline-none focus:border-black/25"
@@ -86,11 +87,11 @@ export default function AdminLoginPage() {
                         disabled={loading}
                         className="w-full rounded-xl border border-black/15 px-5 py-3 text-[11px] uppercase tracking-[0.22em] text-black/85 hover:bg-black hover:text-white transition-colors disabled:opacity-50"
                     >
-                        {loading ? "Signing in…" : "Log in"}
+                        {loading ? t("submitting") : t("submit")}
                     </button>
 
                     <div className="pt-3 text-center text-[10px] uppercase tracking-[0.28em] text-black/30">
-                        Ref. 2026 / Admin Console
+                        {t("footer")}
                     </div>
                 </form>
             </div>
