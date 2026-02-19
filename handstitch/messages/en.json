@@ -120,7 +120,7 @@
                 "women": "Women's Line",
                 "note": "Both collections feature the same premium full-grain leather."
             },
-            "base": {
+            "model": {
                 "title": "Base Model",
                 "subtitle": "Choose the foundation of your wallet",
                 "classic": "Classic Bifold V1",
@@ -157,5 +157,91 @@
         "rights": "All rights reserved.",
         "privacy": "Privacy Policy",
         "terms": "Terms"
+    },
+    "admin": {
+        "login": {
+            "title": "Admin Login",
+            "subtitle": "Authorized staff only.",
+            "email": "Email",
+            "password": "Password",
+            "submit": "Log in",
+            "submitting": "Signing in…",
+            "error_failed": "Login failed",
+            "error_network": "Network error. Please try again.",
+            "footer": "Ref. 2026 / Admin Console"
+        },
+        "dashboard": {
+            "overview": "Overview",
+            "title": "Admin Console",
+            "status_system": "System Status",
+            "status_connected": "Connected",
+            "status_auth": "Auth Module",
+            "status_verified": "Verified",
+            "ready_notice": "Ready for data integration: models, materials, orders."
+        },
+        "users": {
+            "access_control": "Access control",
+            "title": "Users",
+            "subtitle": "Create admin accounts and staff logins.",
+            "total": "Total",
+            "create_title": "Create user",
+            "email": "Email",
+            "password": "Password",
+            "role": "Role",
+            "role_editor": "editor",
+            "role_admin": "admin",
+            "add": "Add",
+            "tip": "Tip: keep only your account as admin, everyone else as editor.",
+            "id": "ID",
+            "no_users": "No users found.",
+            "loading": "Loading…",
+            "refresh": "Refresh"
+        },
+        "navigation": {
+            "dashboard": "Dashboard",
+            "users": "Users",
+            "sign_out": "Sign out"
+        },
+        "common": {
+            "console": "Console",
+            "dashboard": "Dashboard"
+        }
+    },
+    "journal": {
+        "title": "Visual Journal",
+        "plate": "Plate",
+        "items": {
+            "01": "Signature Grain",
+            "02": "Aerodynamic Fold",
+            "03": "Carbon Stitch",
+            "04": "Internal Architecture",
+            "05": "Internal Architecture",
+            "06": "Internal Architecture"
+        }
+    },
+    "faq": {
+        "support": "Support",
+        "title_1": "Frequently",
+        "title_2": "Asked Questions",
+        "description": "Clear answers about ordering, delivery, customization and materials.",
+        "view_all": "View All",
+        "items": {
+            "order": {
+                "q": "How do I order a custom wallet?",
+                "a": "Use the configurator to select your model, materials, stitching, and options. Submit your order and we will contact you with confirmation and production details."
+            },
+            "payment": {
+                "q": "How does payment work?",
+                "a": "We currently offer Cash on Delivery (COD) through our cargo delivery partner within North Macedonia."
+            },
+            "production": {
+                "q": "How long does production take?",
+                "a": "Production time depends on configuration and workload. You will receive an estimated timeframe after placing your order."
+            },
+            "change": {
+                "q": "Can I change my order after submitting?",
+                "a": "If production has not started, adjustments are usually possible. Contact us immediately with your order details."
+            }
+        }
     }
 }

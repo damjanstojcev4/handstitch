@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type UserRow = {
     id: number;
@@ -11,6 +12,7 @@ type UserRow = {
 };
 
 export default function UsersPage() {
+    const t = useTranslations("admin.users");
     const [rows, setRows] = useState<UserRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState<string | null>(null);
@@ -27,7 +29,7 @@ export default function UsersPage() {
         try {
             const res = await fetch("/api/admin/users");
             const data = await res.json();
-            if (!res.ok) throw new Error(data?.message || "Failed to load users");
+            if (!res.ok) throw new Error(data?.message || t("loading"));
             setRows(Array.isArray(data) ? data : data?.items ?? data?.data ?? []);
         } catch (e: any) {
             setErr(e.message || "Error");
@@ -51,7 +53,7 @@ export default function UsersPage() {
                 body: JSON.stringify({ email, password, role }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data?.message || "Failed to create user");
+            if (!res.ok) throw new Error(data?.message || "Error");
 
             setEmail("");
             setPassword("");
@@ -70,13 +72,13 @@ export default function UsersPage() {
         <div className="space-y-6">
             <div className="flex items-end justify-between gap-4">
                 <div>
-                    <p className="text-[10px] uppercase tracking-[0.34em] text-black/45">Access control</p>
-                    <h2 className="mt-2 text-xl font-semibold tracking-tight text-black/85">Users</h2>
-                    <p className="mt-2 text-sm text-black/55">Create admin accounts and staff logins.</p>
+                    <p className="text-[10px] uppercase tracking-[0.34em] text-black/45">{t("access_control")}</p>
+                    <h2 className="mt-2 text-xl font-semibold tracking-tight text-black/85">{t("title")}</h2>
+                    <p className="mt-2 text-sm text-black/55">{t("subtitle")}</p>
                 </div>
 
                 <div className="rounded-xl border border-black/5 bg-black/[0.02] px-4 py-3">
-                    <p className="text-[10px] uppercase tracking-[0.28em] text-black/45">Total</p>
+                    <p className="text-[10px] uppercase tracking-[0.28em] text-black/45">{t("total")}</p>
                     <p className="mt-1 text-sm text-black/80">{count}</p>
                 </div>
             </div>
@@ -89,11 +91,11 @@ export default function UsersPage() {
 
             {/* Create */}
             <div className="rounded-2xl border border-black/5 bg-black/[0.02] p-6">
-                <p className="text-[10px] uppercase tracking-[0.32em] text-black/45">Create user</p>
+                <p className="text-[10px] uppercase tracking-[0.32em] text-black/45">{t("create_title")}</p>
 
                 <form onSubmit={createUser} className="mt-5 grid grid-cols-12 gap-4">
                     <div className="col-span-12 md:col-span-5">
-                        <label className="block text-[10px] uppercase tracking-[0.28em] text-black/45">Email</label>
+                        <label className="block text-[10px] uppercase tracking-[0.28em] text-black/45">{t("email")}</label>
                         <input
                             className="mt-2 w-full rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-sm text-black/85 outline-none focus:border-black/25"
                             value={email}
@@ -104,7 +106,7 @@ export default function UsersPage() {
                     </div>
 
                     <div className="col-span-12 md:col-span-4">
-                        <label className="block text-[10px] uppercase tracking-[0.28em] text-black/45">Password</label>
+                        <label className="block text-[10px] uppercase tracking-[0.28em] text-black/45">{t("password")}</label>
                         <input
                             className="mt-2 w-full rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-sm text-black/85 outline-none focus:border-black/25"
                             value={password}
@@ -115,14 +117,14 @@ export default function UsersPage() {
                     </div>
 
                     <div className="col-span-12 md:col-span-2">
-                        <label className="block text-[10px] uppercase tracking-[0.28em] text-black/45">Role</label>
+                        <label className="block text-[10px] uppercase tracking-[0.28em] text-black/45">{t("role")}</label>
                         <select
                             className="mt-2 w-full rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-sm text-black/85 outline-none focus:border-black/25"
                             value={role}
                             onChange={(e) => setRole(e.target.value as any)}
                         >
-                            <option value="editor">editor</option>
-                            <option value="admin">admin</option>
+                            <option value="editor">{t("role_editor")}</option>
+                            <option value="admin">{t("role_admin")}</option>
                         </select>
                     </div>
 
@@ -131,13 +133,13 @@ export default function UsersPage() {
                             disabled={creating}
                             className="w-full rounded-xl border border-black/15 px-4 py-3 text-[11px] uppercase tracking-[0.22em] text-black/85 hover:bg-black hover:text-white transition-colors disabled:opacity-50"
                         >
-                            {creating ? "…" : "Add"}
+                            {creating ? "…" : t("add")}
                         </button>
                     </div>
                 </form>
 
                 <p className="mt-4 text-xs text-black/45">
-                    Tip: keep only your account as <span className="text-black/70">admin</span>, everyone else as <span className="text-black/70">editor</span>.
+                    {t("tip")}
                 </p>
             </div>
 
@@ -147,20 +149,20 @@ export default function UsersPage() {
                     <table className="min-w-full">
                         <thead className="bg-black/5">
                             <tr>
-                                <th className="px-5 py-4 text-left text-[10px] uppercase tracking-[0.32em] text-black/45">ID</th>
-                                <th className="px-5 py-4 text-left text-[10px] uppercase tracking-[0.32em] text-black/45">Email</th>
-                                <th className="px-5 py-4 text-left text-[10px] uppercase tracking-[0.32em] text-black/45">Role</th>
+                                <th className="px-5 py-4 text-left text-[10px] uppercase tracking-[0.32em] text-black/45">{t("id")}</th>
+                                <th className="px-5 py-4 text-left text-[10px] uppercase tracking-[0.32em] text-black/45">{t("email")}</th>
+                                <th className="px-5 py-4 text-left text-[10px] uppercase tracking-[0.32em] text-black/45">{t("role")}</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan={3} className="px-5 py-10 text-sm text-black/55">Loading…</td>
+                                    <td colSpan={3} className="px-5 py-10 text-sm text-black/55">{t("loading")}</td>
                                 </tr>
                             ) : rows.length === 0 ? (
                                 <tr>
-                                    <td colSpan={3} className="px-5 py-10 text-sm text-black/55">No users found.</td>
+                                    <td colSpan={3} className="px-5 py-10 text-sm text-black/55">{t("no_users")}</td>
                                 </tr>
                             ) : (
                                 rows.map((u) => (
@@ -169,7 +171,7 @@ export default function UsersPage() {
                                         <td className="px-5 py-4 text-sm text-black/85">{u.email}</td>
                                         <td className="px-5 py-4 text-sm text-black/70">
                                             <span className="inline-flex rounded-full border border-black/10 bg-black/5 px-3 py-1 text-[10px] uppercase tracking-[0.22em]">
-                                                {u.role ?? "unknown"}
+                                                {u.role ? t(`role_${u.role}` as any) : "unknown"}
                                             </span>
                                         </td>
                                     </tr>
@@ -184,7 +186,7 @@ export default function UsersPage() {
                 onClick={load}
                 className="rounded-xl border border-black/15 px-5 py-3 text-[11px] uppercase tracking-[0.22em] text-black/80 hover:bg-black hover:text-white transition-colors"
             >
-                Refresh
+                {t("refresh")}
             </button>
         </div>
     );

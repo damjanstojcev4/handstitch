@@ -2,17 +2,19 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-
-const nav = [
-    { href: "/admin", label: "Dashboard" },
-    { href: "/admin/users", label: "Users" },
-    // later: models, materials, orders, gallery...
-];
+import { useTranslations } from "next-intl";
 
 export default function Sidebar() {
+    const t = useTranslations("admin.navigation");
     const pathname = usePathname();
     const router = useRouter();
     const locale = pathname.split("/")[1] || "en";
+
+    const nav = [
+        { href: "/admin", label: t("dashboard") },
+        { href: "/admin/users", label: t("users") },
+        // later: models, materials, orders, gallery...
+    ];
 
     async function signOut() {
         await fetch("/api/admin/logout", { method: "POST" });
@@ -57,7 +59,7 @@ export default function Sidebar() {
                     onClick={signOut}
                     className="w-full rounded-xl border border-black/15 px-3 py-2 text-[11px] uppercase tracking-[0.22em] text-black/80 hover:bg-black hover:text-white transition-colors"
                 >
-                    Sign out
+                    {t("sign_out")}
                 </button>
             </div>
         </div>
