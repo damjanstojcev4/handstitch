@@ -105,9 +105,9 @@ export default function Footer() {
                         <a href="#" className="hover:text-[#e7e5e4] transition-colors">
                             {t("privacy")}
                         </a>
-                        <a href="#" className="hover:text-[#e7e5e4] transition-colors">
+                        <Link href={`/${locale}/terms-of-service`} className="hover:text-[#e7e5e4] transition-colors">
                             {t("terms")}
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>
