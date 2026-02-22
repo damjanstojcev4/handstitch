@@ -1,5 +1,6 @@
 {
     "nav": {
+        "home": "Home",
         "men": "Men",
         "women": "Women",
         "customize": "Customize",
@@ -329,6 +330,38 @@
             "s13": {
                 "title": "13. Changes to These Terms",
                 "p1": "Handstitch reserves the right to update these Terms at any time. Updated versions will be posted on the website with a revised “Last updated” date."
+            }
+        },
+        "privacy": {
+            "title": "Privacy Policy",
+            "last_updated_date": "February 2026",
+            "s1": {
+                "title": "1. Introduction",
+                "p1": "Handstitch is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website or purchase our products."
+            },
+            "s2": {
+                "title": "2. Information We Collect",
+                "p1": "We collect information you provide directly to us, such as your name, email address, phone number, and delivery address when you place an order.",
+                "p2": "We also collect information about your order history and preferences."
+            },
+            "s3": {
+                "title": "3. How We Use Your Information",
+                "p1": "We use your information to:",
+                "li1": "Process and fulfill your orders.",
+                "li2": "Communicate with you about your order.",
+                "li3": "Internal record keeping and business analysis."
+            },
+            "s4": {
+                "title": "4. Data Security",
+                "p1": "We take reasonable measures to protect your personal information from unauthorized access, use, or disclosure."
+            },
+            "s5": {
+                "title": "5. Third-Party Services",
+                "p1": "We may share your information with third-party service providers, such as delivery partners, to fulfill your orders."
+            },
+            "s6": {
+                "title": "6. Your Rights",
+                "p1": "You have the right to access, correct, or delete your personal information. Please contact us if you wish to exercise these rights."
             }
         }
     }

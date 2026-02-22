@@ -102,9 +102,9 @@ export default function Footer() {
                         © {new Date().getFullYear()} Handstitch. {t("rights")}
                     </p>
                     <div className="flex gap-6">
-                        <a href="#" className="hover:text-[#e7e5e4] transition-colors">
+                        <Link href={`/${locale}/privacy-policy`} className="hover:text-[#e7e5e4] transition-colors">
                             {t("privacy")}
-                        </a>
+                        </Link>
                         <Link href={`/${locale}/terms-of-service`} className="hover:text-[#e7e5e4] transition-colors">
                             {t("terms")}
                         </Link>
