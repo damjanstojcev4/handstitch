@@ -4,72 +4,67 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-const images = [
-    { id: "01", src: "/images/img1.jpg" },
-    { id: "02", src: "/images/img2.jpg" },
-    { id: "03", src: "/images/img3.jpg" },
-    { id: "04", src: "/images/img4.jpg" },
-    { id: "05", src: "/images/img5.jpg" },
-    { id: "06", src: "/images/img6.jpg" },
+const collections = [
+    {
+        id: "men",
+        images: ["/images/img10.jpg", "/images/img3.jpg", "/images/img11.jpg"],
+    },
+    {
+        id: "women",
+        images: ["/images/z1.jpg", "/images/z2.jpg", "/images/z3.jpg"],
+    },
+    {
+        id: "holders",
+        images: ["/images/ch1.jpg", "/images/ch2.jpg", "/images/ch3.jpg"],
+    },
 ];
 
 export default function StudioGallery() {
     const t = useTranslations("journal");
 
     return (
-        <section className="py-24 bg-transparent">
-            <div className="max-w-[1800px] mx-auto px-6">
+        <section className="py-24 lg:py-32 bg-transparent text-white overflow-hidden">
+            <div className="max-w-[1800px] mx-auto px-6 space-y-24 md:space-y-40">
 
-                {/* Simple, Sharp Header */}
-                <div className="mb-16">
-                    <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 mb-2">
-                        {t("title")}
-                    </h2>
-                    <div className="h-px w-12 bg-white/20" />
-                </div>
+                {collections.map((category, catIdx) => (
+                    <div key={category.id} className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-2">
 
-                {/* The Strip: Simple 2-column or 3-column grid with high spacing */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20">
-                    {images.map((img, idx) => {
-                        const productTitle = t(`items.${img.id}`);
-                        return (
+                        {/* 1. THE TITLE CARD */}
+                        <div className={`flex flex-col justify-end p-8 md:p-12 border border-white/5 bg-white/[0.02] ${catIdx % 2 !== 0 ? 'md:order-last' : ''}`}>
+                            <h2 className="text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-[0.85] mb-2">
+                                {t(`categories.${category.id}.title`)}<br />
+                                <span className="opacity-20 italic font-light">{t("collection_label")}</span>
+                            </h2>
+                        </div>
+
+                        {/* 2. THE TRIPTYCH */}
+                        {category.images.map((imgSrc, idx) => (
                             <motion.div
-                                key={img.id}
+                                key={`${category.id}-${idx}`}
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.8, delay: idx * 0.1 }}
-                                className="group"
+                                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
+                                className="relative aspect-square overflow-hidden bg-white/[0.03] border border-white/5 group"
                             >
-                                {/* Image Container: Strictly 4:5 for a professional portrait look */}
-                                <div className="relative aspect-[4/5] overflow-hidden bg-white/[0.02] border border-white/5">
-                                    <Image
-                                        src={img.src}
-                                        alt={productTitle}
-                                        fill
-                                        className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
-                                    />
+                                <Image
+                                    src={imgSrc}
+                                    alt="Product Detail"
+                                    fill
+                                    className="object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-110"
+                                />
 
-                                    {/* Subtle Technical Overlay on Hover */}
-                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                </div>
+                                {/* Subtle Overlay */}
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-                                {/* Minimal Labeling */}
-                                <div className="mt-6 flex justify-between items-baseline">
-                                    <div className="flex flex-col">
-                                        <span className="font-mono text-[9px] text-white/20 uppercase tracking-widest mb-1">
-                                            {t("plate")} {img.id}
-                                        </span>
-                                        <h3 className="text-sm font-light uppercase tracking-[0.2em] text-white/80 group-hover:text-white transition-colors">
-                                            {productTitle}
-                                        </h3>
-                                    </div>
-                                    <span className="text-[10px] font-serif italic text-white/20">Ref. 2026</span>
+                                {/* Technical Label */}
+                                <div className="absolute bottom-5 left-5 font-mono text-[8px] text-white/40 tracking-[0.4em] uppercase mix-blend-difference">
+                                    {category.id} // {String(idx + 1).padStart(2, '0')}
                                 </div>
                             </motion.div>
-                        );
-                    })}
-                </div>
+                        ))}
+                    </div>
+                ))}
 
             </div>
         </section>
