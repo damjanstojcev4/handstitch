@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
     const { email, password } = await req.json();
-    const base = process.env.XANO_BASE_URL!;
+    const base = process.env.XANO_OLD_URL!;
     const res = await fetch(`${base}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

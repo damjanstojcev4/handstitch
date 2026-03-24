@@ -16,7 +16,7 @@ export async function getMe(): Promise<Me | null> {
     const token = await getToken();
     if (!token) return null;
 
-    const base = process.env.XANO_BASE_URL!;
+    const base = process.env.XANO_OLD_URL!;
     const res = await fetch(`${base}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
