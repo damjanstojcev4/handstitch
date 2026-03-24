@@ -1,79 +1,89 @@
-// cnvas/WalletModel.tsx
 "use client";
 
+import { useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useEffect, useMemo, useRef } from "react";
+import { SkeletonUtils } from "three-stdlib";
 import * as THREE from "three";
+import type { Option, OptionValue, SelectionState } from "@/app/components/canvas/types";
 
-/**
- * These MUST match the object names inside your GLB (case-sensitive).
- */
-export type PartId =
-  | "CARD_HOLDER_1"
-  | "CARD_HOLDER_2"
-  | "CARD_HOLDER_3"
-  | "CARD_HOLDER_4"
-  | "MONEY_POCKET";
-
-export type WalletConfig = {
-  enabled: Partial<Record<PartId, boolean>>;
+type Props = {
+  glbUrl: string;
+  options: Option[];
+  selections: SelectionState;
 };
 
-const TOGGLE_PARTS: PartId[] = [
-  "CARD_HOLDER_1",
-  "CARD_HOLDER_2",
-  "CARD_HOLDER_3",
-  "CARD_HOLDER_4",
-  "MONEY_POCKET",
-];
+export default function WalletModel({ glbUrl, options, selections }: Props) {
+  const { scene } = useGLTF(glbUrl);
+  const cloned = useMemo(() => SkeletonUtils.clone(scene), [scene]);
 
-export default function WalletModel({ config }: { config: WalletConfig }) {
-  const gltf = useGLTF("/models/WALLET.glb");
-
-  // Clone scene so we don't mutate shared GLTF scene
-  const baseScene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
-
-  // Warn-once for missing parts
-  const warnedMissing = useRef<Set<string>>(new Set());
-
-  // Scale + center once
   useEffect(() => {
-    const box = new THREE.Box3().setFromObject(baseScene);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
+    // Build a map: option_id → { option, selectedValue }
+    const selectionMap = new Map<number, { option: Option; value: OptionValue | null }>();
+    options.forEach((opt) => {
+      selectionMap.set(opt.id, {
+        option: opt,
+        value: selections[opt.id] ?? null,
+      });
+    });
 
-    baseScene.position.sub(center);
+    cloned.traverse((obj) => {
+      if (!(obj instanceof THREE.Object3D)) return;
 
-    const maxAxis = Math.max(size.x, size.y, size.z);
-    const desiredSize = 1.6;
-    const scale = desiredSize / (maxAxis || 1);
-    baseScene.scale.setScalar(scale);
-  }, [baseScene]);
+      // Find which option controls this object (by option_key === object name)
+      const entry = [...selectionMap.values()].find(
+        (e) => e.option.option_key === obj.name
+      );
 
-  // Toggle visibility
-  useEffect(() => {
-    for (const id of TOGGLE_PARTS) {
-      const obj = baseScene.getObjectByName(id);
+      if (!entry) return; // Not a controlled mesh, leave as-is
 
-      if (!obj) {
-        if (!warnedMissing.current.has(id)) {
-          warnedMissing.current.add(id);
-          console.warn(
-            `[WalletModel] Could not find "${id}" in WALLET.glb. Check Blender object name (case-sensitive).`
-          );
-        }
-        continue;
-      }
+      const { option, value } = entry;
 
-      obj.visible = !!config.enabled[id];
-    }
-  }, [baseScene, config.enabled]);
+      // Required meshes (BACK_PANEL) are always visible
+      // Optional meshes are visible only if a value is selected
+      const shouldBeVisible = option.is_required ? true : value !== null;
+
+      obj.visible = shouldBeVisible;
+      if (!shouldBeVisible) return;
+
+      // Apply color: traverse children to find actual meshes
+      obj.traverse((child) => {
+        if (!(child instanceof THREE.Mesh)) return;
+
+        const materials = Array.isArray(child.material)
+          ? child.material
+          : [child.material];
+
+        const newMaterials = materials.map((mat: THREE.Material) => {
+          // Find which value targets this material slot by mesh_variant name
+          // If a specific value is selected, apply its color to the matching slot
+          // If mesh has only one material slot, just apply selected color
+          if (!value) return mat;
+
+          const targetVariant = value.mesh_variant; // e.g. "BLACK_LEATHER"
+          const matName = mat.name?.toUpperCase() ?? "";
+
+          // Match by name OR single-slot fallback
+          const isMatch = matName === targetVariant || materials.length === 1;
+
+          if (isMatch && mat instanceof THREE.MeshStandardMaterial) {
+            const clonedMat = mat.clone();
+            clonedMat.color = new THREE.Color(value.material_color_code);
+            clonedMat.needsUpdate = true;
+            return clonedMat;
+          }
+
+          return mat;
+        });
+
+        child.material = newMaterials.length === 1 ? newMaterials[0] : newMaterials;
+      });
+    });
+  }, [cloned, options, selections]);
 
   return (
-    <group>
-      <primitive object={baseScene} />
-    </group>
+    <primitive
+      object={cloned}
+      rotation={[Math.PI, 0, 0]}
+    />
   );
 }
-
-useGLTF.preload("/models/WALLET.glb");

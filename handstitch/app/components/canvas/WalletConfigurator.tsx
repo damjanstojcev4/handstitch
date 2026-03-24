@@ -1,308 +1,320 @@
-// cnvas/WalletConfigurator.tsx
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import WalletCanvas from "./WalletCanvas";
-import type { PartId, WalletConfig } from "./WalletModel";
+import type {
+  WalletModelData,
+  Option,
+  OptionValue,
+  SelectionState,
+  ConfigResponse,
+} from "@/app/components/canvas/types";
 
-// Helper for Tailwind classes
 const cx = (...classes: (string | boolean | undefined)[]) =>
   classes.filter(Boolean).join(" ");
 
-const views = [
-  { key: "front", label: "Front" },
-  { key: "back", label: "Back" },
-  { key: "detail", label: "Detail" },
-  { key: "360", label: "360" },
-] as const;
-
-const STITCH_OPTIONS = [
-  { key: "black", label: "Midnight Black", color: "#1A1A1A" },
-  { key: "brown", label: "Saddle Brown", color: "#4B2C20" },
-  { key: "tan", label: "Classic Tan", color: "#B38B6D" },
-  { key: "creme", label: "Vanilla Creme", color: "#F5F5DC" },
-];
-
-const DRAG_ITEMS: { id: PartId; label: string }[] = [
-  { id: "CARD_HOLDER_1", label: "Card Slot 1" },
-  { id: "CARD_HOLDER_2", label: "Card Slot 2" },
-  { id: "CARD_HOLDER_3", label: "Card Slot 3" },
-  { id: "CARD_HOLDER_4", label: "Card Slot 4" },
-  { id: "MONEY_POCKET", label: "Money Pocket" },
-];
-
-function StepShell({
-  title,
-  done,
-  className,
-  children,
-}: {
-  title: string;
-  done: boolean;
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className={cx(
-        "p-6 border transition-all duration-500",
-        done ? "border-white/5 bg-white/[0.02]" : "border-white/20 bg-white/[0.05]",
-        className
-      )}
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-            {title}
-          </h3>
-        </div>
-      </div>
-      {children}
-    </div>
-  );
+// ── Price calculator ───────────────────────────────────────
+function calcTotal(
+  basePrice: number,
+  options: Option[],
+  selections: SelectionState
+): number {
+  const adjustments = options.reduce((sum, opt) => {
+    const val = selections[opt.id];
+    return sum + (val?.price_adjustment ?? 0);
+  }, 0);
+  return basePrice + adjustments;
 }
 
-function ReviewButton({
-  disabled,
-  label,
-  className,
+// ── Swatch button ──────────────────────────────────────────
+function Swatch({
+  value,
+  selected,
+  onClick,
 }: {
-  disabled: boolean;
-  label: string;
-  className?: string;
+  value: OptionValue;
+  selected: boolean;
+  onClick: () => void;
 }) {
+  const isLight = isLightColor(value.material_color_code);
   return (
     <button
-      disabled={disabled}
+      onClick={onClick}
+      title={value.material_color_name}
+      aria-pressed={selected}
       className={cx(
-        "w-full bg-white text-black uppercase tracking-[0.3em] text-[11px] transition-all",
-        disabled
-          ? "opacity-30 bg-transparent text-white/20 border border-white/10 cursor-not-allowed"
-          : "hover:bg-zinc-200 active:scale-[0.98]",
-        className
+        "group relative p-3 border flex flex-col items-center gap-2 transition-all duration-150",
+        selected ? "border-white" : "border-white/20 hover:border-white/50"
       )}
     >
-      {label}
+      <div
+        className="w-7 h-7 rounded-full border border-white/10"
+        style={{ backgroundColor: value.material_color_code }}
+      />
+      <span className="text-[9px] uppercase tracking-wider text-white/60 group-hover:text-white/90 transition-colors leading-tight text-center">
+        {value.material_color_name}
+      </span>
+      {selected && (
+        <span className="absolute top-1.5 right-1.5">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path
+              d="M2 5l2.5 2.5 3.5-4"
+              stroke={isLight ? "#000" : "#fff"}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      )}
     </button>
   );
 }
 
-export default function WalletConfigurator() {
-  const t = useTranslations("configurator");
+// ── Main component ─────────────────────────────────────────
+export default function WalletConfigurator({ modelId = 1 }: { modelId?: number }) {
+  const [wallet, setWallet] = useState<WalletModelData | null>(null);
+  const [options, setOptions] = useState<Option[]>([]);
+  const [selections, setSelections] = useState<SelectionState>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [ordering, setOrdering] = useState(false);
+  const [ordered, setOrdered] = useState(false);
 
-  const [activeView, setActiveView] = useState<string>("front");
-  const [gender, setGender] = useState<string | null>(null);
-  const [baseModel, setBaseModel] = useState<string | null>(null);
-  const [config, setConfig] = useState<WalletConfig>({ enabled: {} });
-  const [stitching, setStitching] = useState<string | null>(null);
+  // ── Fetch from Supabase RPC ──────────────────────────────
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/get_wallet_model_config`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+            },
+            body: JSON.stringify({ wallet_model_id: modelId }),
+          }
+        );
 
-  const resetConfig = () => {
-    setGender(null);
-    setBaseModel(null);
-    setConfig({ enabled: {} });
-    setStitching(null);
-    setActiveView("front");
+        if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+        const data: ConfigResponse = await res.json();
+
+        setWallet(data.model);
+        setOptions(data.options);
+
+        // Auto-select first value for required options (e.g. BACK_PANEL)
+        const defaults: SelectionState = {};
+        data.options.forEach((opt) => {
+          if (opt.is_required && opt.values.length > 0) {
+            defaults[opt.id] = opt.values[0];
+          } else {
+            defaults[opt.id] = null;
+          }
+        });
+        setSelections(defaults);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Failed to load");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [modelId]);
+
+  const selectValue = (optionId: number, value: OptionValue) => {
+    setSelections((prev) => {
+      // If already selected → deselect (only for non-required)
+      const opt = options.find((o) => o.id === optionId);
+      if (!opt?.is_required && prev[optionId]?.id === value.id) {
+        return { ...prev, [optionId]: null };
+      }
+      return { ...prev, [optionId]: value };
+    });
   };
 
-  const togglePart = (id: PartId) => {
-    setConfig((prev) => ({
-      ...prev,
-      enabled: { ...prev.enabled, [id]: !prev.enabled[id] },
-    }));
+  // ── Order submission ──────────────────────────────────────
+  const handleOrder = async () => {
+    if (!wallet) return;
+    setOrdering(true);
+    try {
+      const configuration: Record<string, string> = {};
+      options.forEach((opt) => {
+        const val = selections[opt.id];
+        if (val) configuration[opt.display_name] = val.material_color_name;
+      });
+
+      await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/orders`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({
+            model_name: wallet.name,
+            configuration,
+            total_price: calcTotal(wallet.base_price, options, selections),
+            status: "pending",
+          }),
+        }
+      );
+      setOrdered(true);
+    } catch {
+      alert("Failed to place order. Please try again.");
+    } finally {
+      setOrdering(false);
+    }
   };
 
-  const step0Done = !!gender;
-  const step1Done = !!baseModel;
-  const step2Done = Object.values(config.enabled).some((v) => v);
-  const step3Done = !!stitching;
+  // ── States ────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <div className="h-[600px] flex items-center justify-center">
+        <span className="text-white/40 text-sm uppercase tracking-widest animate-pulse">
+          Loading configurator...
+        </span>
+      </div>
+    );
+  }
 
-  // NOTE: your old logic ignored step2; keep or change depending on your flow.
-  const allMainStepsDone = step0Done && step1Done && step3Done;
+  if (error) {
+    return (
+      <div className="h-[600px] flex items-center justify-center">
+        <span className="text-red-400 text-sm">{error}</span>
+      </div>
+    );
+  }
 
+  if (ordered) {
+    return (
+      <div className="h-[600px] flex flex-col items-center justify-center gap-4">
+        <span className="text-white text-2xl font-light">Order Placed</span>
+        <span className="text-white/40 text-sm">We'll be in touch soon.</span>
+        <button
+          onClick={() => setOrdered(false)}
+          className="mt-4 text-xs uppercase tracking-widest text-white/50 hover:text-white border border-white/20 hover:border-white/50 px-6 py-2 transition-colors"
+        >
+          Configure Another
+        </button>
+      </div>
+    );
+  }
+
+  const total = wallet ? calcTotal(wallet.base_price, options, selections) : 0;
+
+  // ── Render ────────────────────────────────────────────────
   return (
-    <section className="relative py-20 lg:py-32 bg-transparent">
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20">
-        {/* Header */}
-        <div className="relative mb-16 flex justify-between items-end">
+    <section className="py-20">
+      <div className="max-w-[1800px] mx-auto px-6 grid lg:grid-cols-12 gap-20">
+
+        {/* 3D Canvas */}
+        <div className="lg:col-span-7 h-[700px]">
+          {wallet && (
+            <WalletCanvas
+              glbUrl={wallet.glb_url}
+              options={options}
+              selections={selections}
+            />
+          )}
+        </div>
+
+        {/* UI Panel */}
+        <div className="lg:col-span-5 flex flex-col gap-8 justify-center">
+
           <div>
-            <h2 className="text-4xl md:text-6xl font-semibold uppercase tracking-tighter text-white">
-              {t("customize")}
+            <p className="text-white/30 text-xs uppercase tracking-widest mb-1">
+              {wallet?.gender_category}
+            </p>
+            <h2 className="text-3xl text-white uppercase font-semibold tracking-wide">
+              {wallet?.name}
             </h2>
           </div>
 
-          <button
-            onClick={resetConfig}
-            className="hidden md:flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest text-white hover:bg-white hover:text-black transition-colors border border-white/20 px-5 py-2 rounded-full"
-          >
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-            >
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-              <path d="M3 3v5h5" />
-            </svg>
-            {t("reset")}
-          </button>
-        </div>
+          {/* Options */}
+          <div className="space-y-8">
+            {options.map((opt) => {
+              const isSelected = selections[opt.id] !== null;
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-          {/* Sticky Canvas */}
-          <div className="lg:col-span-7 sticky top-0 lg:top-24 z-30 -mx-6 lg:mx-0">
-            <div className="relative group">
-              <div className="rounded-none lg:rounded-3xl overflow-hidden bg-white/[0.02] backdrop-blur-3xl border-y border-white/5 lg:border shadow-2xl transition-all duration-700 group-hover:border-white/10">
-                <div className="h-[45vh] md:h-[600px] lg:h-[750px]">
-                  <WalletCanvas activeView={activeView} config={config} />
-                </div>
-
-                {/* View Switcher */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1 bg-black/40 backdrop-blur-md p-1 rounded-full border border-white/5">
-                  {views.map((view) => (
-                    <button
-                      key={view.key}
-                      onClick={() => setActiveView(view.key)}
-                      className={cx(
-                        "px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider transition-all",
-                        activeView === view.key
-                          ? "bg-white text-black"
-                          : "text-white/40 hover:text-white"
-                      )}
-                    >
-                      {view.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Config Panel */}
-          <div className="lg:col-span-5 space-y-4 pt-8 lg:pt-0">
-            <div className="flex flex-col gap-3">
-              <StepShell
-                title={t("steps.gender.title")}
-                done={step0Done}
-                className="bg-white/[0.03] border-white/5"
-              >
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  {["men", "women"].map((g) => (
-                    <button
-                      key={g}
-                      onClick={() => setGender(g)}
-                      className={cx(
-                        "py-4 border rounded-sm text-[10px] font-semibold uppercase tracking-widest transition-all",
-                        gender === g
-                          ? "bg-white text-black border-white"
-                          : "border-white/30 text-white/70 hover:border-white/40"
-                      )}
-                    >
-                      {t(`steps.gender.${g}`)}
-                    </button>
-                  ))}
-                </div>
-              </StepShell>
-
-              <StepShell
-                title={t("steps.model.title")}
-                done={step1Done}
-                className="bg-white/[0.03] border-white/5"
-              >
-                <div className="grid grid-cols-1 gap-2 mt-4">
-                  {["Classic Bifold", "Slim Cardholder"].map((m) => (
-                    <button
-                      key={m}
-                      onClick={() => setBaseModel(m)}
-                      className={cx(
-                        "py-4 px-6 rounded-sm border text-left font-semibold text-[10px] uppercase tracking-widest transition-all",
-                        baseModel === m
-                          ? "bg-white text-black border-white"
-                          : "border-white/40 text-white/70 hover:border-white/50"
-                      )}
-                    >
-                      {m}
-                    </button>
-                  ))}
-                </div>
-              </StepShell>
-
-              <StepShell
-                title={t("steps.parts.title")}
-                done={step2Done}
-                className="bg-white/[0.03] border-white/5"
-              >
-                <div className="grid grid-cols-1 gap-2 mt-4">
-                  {DRAG_ITEMS.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => togglePart(item.id)}
-                      className={cx(
-                        "flex items-center justify-between py-4 px-6 border text-left font-semibold text-[10px] uppercase tracking-widest transition-all",
-                        config.enabled[item.id]
-                          ? "bg-white/10 border-white text-white"
-                          : "border-white/30 text-white/70 hover:border-white/40"
-                      )}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </StepShell>
-
-              <StepShell
-                title={t("steps.stitch.title")}
-                done={step3Done}
-                className="bg-white/[0.03] border-white/5"
-              >
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  {STITCH_OPTIONS.map((s) => (
-                    <button
-                      key={s.key}
-                      onClick={() => setStitching(s.key)}
-                      className={cx(
-                        "flex items-center gap-3 p-4 border transition-all",
-                        stitching === s.key
-                          ? "border-white bg-white/5"
-                          : "border-white/30 hover:border-white/40"
-                      )}
-                    >
-                      <div
-                        className="h-3 w-3 rounded-full"
-                        style={{ backgroundColor: s.color }}
-                      />
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-white">
-                        {s.label}
+              return (
+                <div key={opt.id} className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs uppercase tracking-widest text-white/80">
+                      {opt.display_name}
+                    </h3>
+                    {!opt.is_required && (
+                      <span
+                        className={cx(
+                          "text-[9px] uppercase tracking-widest px-2 py-0.5 border transition-colors",
+                          isSelected
+                            ? "border-white/30 text-white/50"
+                            : "border-white/10 text-white/25"
+                        )}
+                      >
+                        {isSelected ? "Added" : "Optional"}
                       </span>
-                    </button>
-                  ))}
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    {opt.values.map((val) => (
+                      <Swatch
+                        key={val.id}
+                        value={val}
+                        selected={selections[opt.id]?.id === val.id}
+                        onClick={() => selectValue(opt.id, val)}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </StepShell>
-            </div>
-
-
-            <div className="pt-10">
-              <ReviewButton
-                disabled={!allMainStepsDone}
-                label={t("review_order")}
-                className="py-6"
-              />
-            </div>
+              );
+            })}
           </div>
-        </div>
-      </div>
 
-      {/* Mobile Floating CTA */}
-      <div className="lg:hidden fixed bottom-0 w-full p-6 bg-gradient-to-t from-black via-black/90 to-transparent z-50">
-        <ReviewButton
-          disabled={!allMainStepsDone}
-          label={t("review_order")}
-          className="py-5 font-black shadow-2xl"
-        />
+          {/* Price + CTA */}
+          <div className="border-t border-white/10 pt-6 flex items-center justify-between">
+            <div>
+              <p className="text-white/30 text-[10px] uppercase tracking-widest mb-0.5">
+                Total
+              </p>
+              <p className="text-2xl text-white font-semibold">
+                {total.toLocaleString()}
+                <span className="text-sm text-white/40 ml-1">MKD</span>
+              </p>
+            </div>
+
+            <button
+              onClick={handleOrder}
+              disabled={ordering}
+              className={cx(
+                "px-8 py-3 text-xs uppercase tracking-widest font-medium transition-all duration-200",
+                ordering
+                  ? "bg-white/10 text-white/30 cursor-not-allowed"
+                  : "bg-white text-black hover:bg-white/90 active:scale-95"
+              )}
+            >
+              {ordering ? "Placing..." : "Order Now"}
+            </button>
+          </div>
+
+        </div>
       </div>
     </section>
   );
+}
+
+// ── Utility ───────────────────────────────────────────────
+function isLightColor(hex: string): boolean {
+  const c = hex.replace("#", "");
+  const r = parseInt(c.substring(0, 2), 16);
+  const g = parseInt(c.substring(2, 4), 16);
+  const b = parseInt(c.substring(4, 6), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5;
 }
